@@ -366,7 +366,11 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
 [data-theme="dark"] .fsec>.ttl i{background:var(--gold);color:#1a1405}
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.inst-row{display:grid;grid-template-columns:28px 1fr 1fr 36px;gap:8px;align-items:center}
+.inst-row{display:grid;grid-template-columns:28px 1.5fr 1fr 150px 36px;gap:8px;align-items:center}
+.money{position:relative}.money span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted)}.money .input{padding-left:32px}
+textarea.input{resize:vertical;min-height:92px;line-height:1.5}
+.totalrow{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:11px;background:var(--gold-soft);color:var(--gold-ink);font-weight:700;font-size:13px}.totalrow b{font-size:15px}
+.pre{white-space:pre-wrap}
 .inst-row .n{width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:var(--gold-ink);display:grid;place-items:center;font-size:11.5px;font-weight:800}
 .qtyflag{display:none}.qtyflag.show{display:flex}
 
@@ -400,14 +404,49 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
 @media (max-width:720px){
   .kpis{grid-template-columns:repeat(2,1fr)}
   .kpis .kpi:last-child{grid-column:1/-1}
+  .pstats{grid-template-columns:1fr}
   .kv,.checklist,.g2,.g3,.panelbox .grid2,.panelbox .grid3{grid-template-columns:1fr}
   .unit{grid-template-columns:1fr}
   .qrbox{flex-direction:row;justify-content:space-between;width:100%}
   .dr-head{padding:16px 16px 0}.dr-body{padding:16px 16px 36px}
-  .inst-row{grid-template-columns:1fr 1fr 36px}.inst-row .n{display:none}
+  .inst-row{grid-template-columns:1fr 1fr 36px}.inst-row .n{display:none}.inst-row .inst-name{grid-column:1/-1}.inst-row .money{grid-column:1/3}
   .dialog>header,.dialog .dbody,.dialog>footer{padding-left:16px;padding-right:16px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Penagihan */
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pstat{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.pstat>div:first-child{font-size:12px;color:var(--muted)}.pstat b{font-size:22px;color:var(--ink);font-weight:800}
+.pstat span{display:block;font-size:11.5px;font-weight:700;color:var(--ink-2);margin:2px 0 8px}
+.cntb{font-size:11px;padding:1px 8px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink)}
+.bcard{padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2);display:grid;gap:10px;margin-top:10px}
+.bcard:first-of-type{margin-top:0}
+.bhead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.uchips{display:flex;flex-wrap:wrap;gap:6px}.uchips span{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:8px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.ulist{display:grid;gap:8px;max-height:260px;overflow:auto}
+.ucheck{display:flex;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface);cursor:pointer;font-size:12.5px}
+.ucheck:hover{border-color:var(--gold)}.ucheck input{width:17px;height:17px;accent-color:var(--gold);flex:none}
+.ucheck em{font-style:normal;color:var(--muted);font-size:11.5px}.ucheck small{display:block;color:var(--gold-ink);font-weight:700}
+/* Cetak */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  body.printing>*:not(#printArea){display:none!important}
+  body.printing{background:#fff!important;overflow:visible!important}
+  body.printing #printArea{display:block;color:#111;background:#fff;font:11px/1.45 'Plus Jakarta Sans',Arial,sans-serif}
+  #printArea .pr-head{display:flex;gap:12px;align-items:center;border-bottom:2px solid #b08a43;padding-bottom:8px;margin-bottom:10px}
+  #printArea .pr-head img{width:46px;height:46px}
+  #printArea h1{font-size:16px;margin:0;letter-spacing:.1em}#printArea .pr-head p{margin:0;color:#555}
+  #printArea h2{font-size:12.5px;margin:14px 0 5px;padding-left:6px;border-left:3px solid #b08a43}
+  #printArea table{width:100%;border-collapse:collapse}
+  #printArea .pr-info th{width:15%;text-align:left;color:#555;font-weight:600;padding:3px 6px 3px 0;vertical-align:top}
+  #printArea .pr-info td{padding:3px 10px 3px 0;vertical-align:top}
+  #printArea .pr-tbl th{background:#f1ece0;text-align:left;padding:5px 6px;border:1px solid #cfc7b2}
+  #printArea .pr-tbl td{padding:5px 6px;border:1px solid #d9d2bf;vertical-align:top;word-break:break-word}
+  #printArea tr{page-break-inside:avoid}
+  #printArea small{color:#666}
+  #printArea .pr-foot{margin-top:14px;color:#666;font-size:10px;text-align:right}
+}
 @media print{#sidebar,.mobilebar,.page-head .acts,#toasts{display:none!important}}
 </style>
 </head>
@@ -581,7 +620,7 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
             <div class="field"><label for="coQuotQty">Total Qty Instrumen</label><input class="input" id="coQuotQty" type="number" min="1" inputmode="numeric" /></div>
             <div class="field"><label>PDF Quotation</label><span id="coQuotFileHost"></span></div>
           </div>
-          <div class="field"><label for="coQuotDesc">Deskripsi Quotation</label><input class="input" id="coQuotDesc" autocomplete="off" /></div>
+          <div class="field"><label for="coQuotDesc">Deskripsi Quotation</label><textarea class="input" id="coQuotDesc" rows="4" placeholder="Uraian lengkap penawaran, ruang lingkup, syarat, catatan…"></textarea></div>
         </div>
 
         <div class="fsec">
@@ -591,7 +630,7 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
             <div class="field"><label for="coPoQty">Total Qty pada PO</label><input class="input" id="coPoQty" type="number" min="1" inputmode="numeric" /></div>
             <div class="field"><label>PDF PO Customer</label><span id="coPoFileHost"></span></div>
           </div>
-          <div class="field"><label for="coPoDesc">Deskripsi PO</label><input class="input" id="coPoDesc" autocomplete="off" /></div>
+          <div class="field"><label for="coPoDesc">Deskripsi PO</label><textarea class="input" id="coPoDesc" rows="4" placeholder="Uraian lengkap pesanan sesuai PO customer…"></textarea></div>
           <div id="qtyFlag" class="alert tone-amber qtyflag"><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
         </div>
 
@@ -599,15 +638,18 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
           <div class="ttl" style="justify-content:space-between"><span style="display:flex;gap:9px;align-items:center"><i>3</i>Rincian Instrumen</span>
             <button type="button" class="btn btn-ghost btn-sm" data-act="addInst"><svg class="ic sm" viewBox="0 0 24 24" data-i="plus"></svg>Tambah Instrumen</button></div>
           <div id="instrumentRows" style="display:grid;gap:8px"></div>
+          <div class="totalrow"><span>Total nilai instrumen</span><b id="instTotal">Rp 0</b></div>
           <p class="hint" id="instHint"></p>
         </div>
 
         <div class="field" id="billingField">
-          <label for="coBillingMode">Opsi Penagihan (Instalasi &amp; Kalibrasi, Qty &gt; 1)</label>
+          <label for="coBillingMode">Opsi Pengiriman Dokumen &amp; Penagihan (Instalasi &amp; Kalibrasi, Qty &gt; 1)</label>
           <select class="select input" id="coBillingMode">
-            <option value="FULL">Tunggu semua unit selesai (Full)</option>
-            <option value="PARTIAL">Penagihan parsial per unit selesai</option>
+            <option value="FULL">Full — tunggu semua selesai; dokumen, invoice &amp; bayar sekaligus</option>
+            <option value="PARTIAL">Parsial — dokumen dikirim per batch (tanda terima customer), invoice &amp; bayar parsial</option>
+            <option value="DOC_PARTIAL">Dokumen parsial (tanda terima customer) — invoice keseluruhan &amp; bayar lunas</option>
           </select>
+          <p class="hint" id="billingDesc"></p>
         </div>
         <div id="createError" class="alert tone-red" hidden><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
       </div>
@@ -632,6 +674,7 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
 </div>
 
 <div id="toasts" aria-live="polite"></div>
+<div id="printArea" aria-hidden="true"></div>
 
 <script>
 /* =====================================================================
@@ -687,7 +730,8 @@ const ICONS = {
   circlecheck: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>',
   qr: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v.01M14 21v.01M21 21h-4v-4"/>',
   wallet: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
-  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  printer: '<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/>'
 };
 const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ''}</svg>`;
 function hydrateIcons(root = document) {
@@ -975,22 +1019,56 @@ function handleScan() {
   else toast(`ID unit "${id}" tidak ditemukan.`, 'error');
 }
 
-const billOf = id => appData.billings.find(b => b.OrderID === id);
 const schedsOf = id => appData.schedules.filter(s => s.OrderID === id);
-const accDone = b => !!(b && b.InvoiceUrl && b.TaxInvoiceUrl && b.TaxReceiptUrl);
-const shipDone = b => !!(b && b.DeliveryNoteUrl && b.BillingReceiptUrl && b.DocDeliveryReceiptUrl);
+
+const splitU = v => String(v || '').split(',').map(x => x.trim()).filter(Boolean);
+const isInv = b => !b.Kind || b.Kind === 'INVOICE';
+const isDel = b => !b.Kind || b.Kind === 'DELIVERY';
+const invDone = b => isInv(b) && !!(b.InvoiceUrl && b.TaxInvoiceUrl && b.TaxReceiptUrl);
+const delDone = b => isDel(b) && !!(b.DeliveryNoteUrl && b.DocDeliveryReceiptUrl);
+const BILL_PHASE = ['READY_FOR_ACC_AND_SHIPPING', 'WAITING_SHIPPING_RECEIPT', 'READY_FOR_PURCHASING_BILLING'];
+const fmtRp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const MODE_LABEL = {
+  FULL: 'Full — dokumen, invoice & pembayaran sekaligus',
+  PARTIAL: 'Parsial — dokumen, invoice & pembayaran per batch unit',
+  DOC_PARTIAL: 'Dokumen dikirim parsial · invoice keseluruhan & bayar lunas'
+};
+const modeOf = o => o.BillingMode || 'FULL';
+
+/** Keadaan penagihan order (cerminan billingState di Code.gs). */
+function bstate(o) {
+  const sc = schedsOf(o.OrderID), ids = sc.map(s => s.ScheduleID);
+  const rows = appData.billings.filter(b => b.OrderID === o.OrderID);
+  const unitsOf = b => { const u = splitU(b.Units); return u.length ? u : ids; };
+  const cover = pred => { const set = {}; rows.filter(pred).forEach(r => unitsOf(r).forEach(u => { set[u] = true; })); return set; };
+  const invoiced = cover(invDone), delivered = cover(delDone), paid = cover(b => invDone(b) && b.PaymentStatus === 'PAID_CLOSED');
+  return {
+    sc, ids, unitsOf, invoiced, delivered, paid,
+    invRows: rows.filter(invDone), delRows: rows.filter(delDone),
+    approved: sc.filter(s => s.DocStatus === 'APPROVED_BY_DOC').map(s => s.ScheduleID),
+    ready: rows.filter(b => invDone(b) && b.PaymentStatus !== 'PAID_CLOSED' && unitsOf(b).every(u => delivered[u]))
+  };
+}
+/** Apa yang masih bisa dikerjakan Accounting / Pengiriman / Purchasing pada order ini. */
+function billingCan(o) {
+  if (!BILL_PHASE.includes(o.Status)) return { inv: false, del: false, pur: false, bs: null };
+  const bs = bstate(o), mode = modeOf(o), all = bs.approved.length === bs.ids.length && bs.ids.length > 0;
+  const inv = mode === 'PARTIAL' ? bs.approved.some(u => !bs.invoiced[u]) : all && !bs.ids.some(u => bs.invoiced[u]);
+  const del = mode === 'FULL' ? all && !bs.ids.some(u => bs.delivered[u]) : bs.approved.some(u => !bs.delivered[u]);
+  return { inv, del, pur: bs.ready.length > 0, bs };
+}
 
 function needsMyAction(o) {
-  const r = currentUser.role, st = o.Status, sc = schedsOf(o.OrderID), b = billOf(o.OrderID);
+  const r = currentUser.role, st = o.Status, sc = schedsOf(o.OrderID);
   switch (r) {
     case 'Administrator': return ['PO_QUOT_MISMATCH', 'REVISION_HOLD', 'HOLD_INCOMPLETE'].includes(st);
     case 'Admin/Sales': return st === 'PO_QUOT_MISMATCH';
     case 'Leader': return st !== 'CLOSED' && st !== 'PO_QUOT_MISMATCH' && sc.some(s => s.DocStatus === 'UNSCHEDULED');
     case 'Teknisi': return sc.some(s => ['SCHEDULED', 'REVISION_REQUIRED'].includes(s.DocStatus) && String(s.Technicians).split(',').map(x => x.trim()).includes(currentUser.fullName));
     case 'Admin-Dokumen': return sc.some(s => s.DocStatus === 'SUBMITTED_TO_ADMIN_DOC');
-    case 'Accounting': return st === 'READY_FOR_ACC_AND_SHIPPING' && !accDone(b);
-    case 'Admin-Pengiriman': return ['READY_FOR_ACC_AND_SHIPPING', 'WAITING_SHIPPING_RECEIPT'].includes(st) && !shipDone(b);
-    case 'Purchasing': return st === 'READY_FOR_PURCHASING_BILLING';
+    case 'Accounting': return billingCan(o).inv;
+    case 'Admin-Pengiriman': return billingCan(o).del;
+    case 'Purchasing': return billingCan(o).pur;
     default: return false;
   }
 }
@@ -1090,7 +1168,7 @@ function renderOrders() {
       </div>
       <div class="prog">
         <div class="ubar"><i style="width:${pct}%"></i></div>
-        <small>${done}/${sc.length} unit disetujui${o.BillingMode === 'PARTIAL' ? ' · Parsial' : ''}</small>
+        <small>${done}/${sc.length} unit disetujui${modeOf(o) !== 'FULL' ? ' · Parsial' : ''}</small>
       </div>
       <div class="status-c tone-${m.tone}">
         ${badge(o.Status)}
@@ -1186,7 +1264,7 @@ function renderDetail(keepScroll, flashId) {
 }
 
 function tabNeedsAction(o, k) {
-  const r = currentUser.role, sc = schedsOf(o.OrderID), st = o.Status, b = billOf(o.OrderID);
+  const r = currentUser.role, sc = schedsOf(o.OrderID), st = o.Status;
   if (k === 'summary') return st === 'PO_QUOT_MISMATCH' && roleIs('Admin/Sales');
   if (k === 'units') {
     if (roleIs('Leader') && sc.some(s => s.DocStatus === 'UNSCHEDULED') && st !== 'PO_QUOT_MISMATCH') return true;
@@ -1195,9 +1273,8 @@ function tabNeedsAction(o, k) {
     return false;
   }
   if (k === 'billing') {
-    if (roleIs('Accounting') && st === 'READY_FOR_ACC_AND_SHIPPING' && !accDone(b)) return true;
-    if (roleIs('Admin-Pengiriman') && ['READY_FOR_ACC_AND_SHIPPING', 'WAITING_SHIPPING_RECEIPT'].includes(st) && !shipDone(b)) return true;
-    if (roleIs('Purchasing') && st === 'READY_FOR_PURCHASING_BILLING') return true;
+    const c = billingCan(o);
+    return (roleIs('Accounting') && c.inv) || (roleIs('Admin-Pengiriman') && c.del) || (roleIs('Purchasing') && c.pur);
   }
   return false;
 }
@@ -1224,14 +1301,15 @@ function tabSummary(o) {
     <dl class="kv">
       <div><dt>Quotation</dt><dd>${esc(o.QuotNo)} · ${num(o.QuotTotalQty)} unit</dd></div>
       <div><dt>Purchase Order</dt><dd>${esc(o.PONo)} · ${num(o.POTotalQty)} unit</dd></div>
-      <div><dt>Deskripsi Quotation</dt><dd>${esc(o.QuotDesc) || '—'}</dd></div>
-      <div><dt>Deskripsi PO</dt><dd>${esc(o.PODesc) || '—'}</dd></div>
+      <div class="full"><dt>Deskripsi Quotation</dt><dd class="pre">${esc(o.QuotDesc) || '—'}</dd></div>
+      <div class="full"><dt>Deskripsi PO</dt><dd class="pre">${esc(o.PODesc) || '—'}</dd></div>
       <div class="full"><div class="docrow">${docLink(o.QuotFileUrl, 'PDF Quotation')}${docLink(o.POFileUrl, 'PDF PO Customer')}
         ${o.DriveFolderId ? `<a class="doc" target="_blank" rel="noopener noreferrer" href="https://drive.google.com/drive/folders/${esc(o.DriveFolderId)}">${ic('folder', 'sm')}Folder Google Drive</a>` : ''}</div></div>
     </dl></div>
     <div class="card sec"><h3>${ic('list')}Informasi Order</h3>
     <dl class="kv">
-      <div><dt>Mode Penagihan</dt><dd>${o.BillingMode === 'PARTIAL' ? 'Parsial per unit selesai' : 'Full — tunggu semua selesai'}</dd></div>
+      <div><dt>Opsi Penagihan</dt><dd>${esc(MODE_LABEL[modeOf(o)])}</dd></div>
+      <div><dt>Nilai Order</dt><dd>${fmtRp(o.TotalValue)}</dd></div>
       <div><dt>Jumlah Unit / Kunjungan</dt><dd>${schedsOf(o.OrderID).length}</dd></div>
       <div><dt>Dibuat oleh</dt><dd>${esc(o.CreatedBy)}</dd></div>
       <div><dt>Dibuat pada</dt><dd>${esc(fmtDT(o.CreatedAt))}</dd></div>
@@ -1279,6 +1357,7 @@ function tabUnits(o) {
         <div class="sub">
           <span>${ic('repeat', 'sm')}${esc(s.VisitType)}</span>
           <span>${ic('calendar', 'sm')}${s.ScheduledDate ? esc(fmtDate(s.ScheduledDate)) : 'Belum dijadwalkan'}</span>
+          ${num(s.UnitPrice) ? `<span>${ic('wallet', 'sm')}${fmtRp(s.UnitPrice)}</span>` : ''}
           <span>${ic('users', 'sm')}${techs.length ? esc(techs.join(', ')) : '—'}${mine && currentUser.role === 'Teknisi' ? ' <b style="color:var(--gold-ink)">(Anda)</b>' : ''}</span>
         </div>
         <div class="sub"><span class="mono">${esc(sid)}</span></div>
@@ -1326,47 +1405,116 @@ function drawQRs(o) {
   });
 }
 
-function tabBilling(o) {
-  const b = billOf(o.OrderID) || {};
-  const ck = (ok, label, url) => `<div class="ck ${ok ? 'ok' : ''}"><span class="m">${ok ? ic('check', 'sm') : ''}</span>${esc(label)}${ok && safeUrl(url) ? `<a href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer">Buka</a>` : ''}</div>`;
-  let h = `<div class="card sec"><h3>${ic('wallet')}Dokumen Penagihan</h3>
-    <dl class="kv" style="margin-bottom:14px">
-      <div><dt>No. Invoice</dt><dd>${b.InvoiceNo && b.InvoiceNo !== '-' ? esc(b.InvoiceNo) : '—'}</dd></div>
-      <div><dt>Status Bayar</dt><dd>${b.PaymentStatus === 'PAID_CLOSED' ? '<span class="badge tone-green"><i></i>Lunas · Closed</span>' : '<span class="badge tone-slate"><i></i>Belum dibayar</span>'}</dd></div>
-    </dl>
-    <div class="checklist">
-      ${ck(!!b.InvoiceUrl, 'Invoice', b.InvoiceUrl)}${ck(!!b.TaxInvoiceUrl, 'Faktur Pajak', b.TaxInvoiceUrl)}${ck(!!b.TaxReceiptUrl, 'Tanda Terima', b.TaxReceiptUrl)}
-      ${ck(!!b.DeliveryNoteUrl, 'Surat Jalan Dokumen', b.DeliveryNoteUrl)}${ck(!!b.BillingReceiptUrl, 'Bukti TT Penagihan', b.BillingReceiptUrl)}${ck(!!b.DocDeliveryReceiptUrl, 'Bukti TT SJ Dokumen', b.DocDeliveryReceiptUrl)}
-    </div></div>`;
+function unitPicker(o, id, list, forced) {
+  const kontrak = o.ServiceType === 'Service Kontrak';
+  return `<div class="ulist" id="${id}" data-forced="${forced ? 1 : 0}">${list.map(s => `
+    <label class="ucheck"><input type="checkbox" value="${esc(s.ScheduleID)}" data-price="${num(s.UnitPrice)}" ${forced ? 'checked disabled' : ''} />
+    <span><b>${esc(s.InstrumentName)}</b> <em class="mono">SN ${esc(s.SerialNo)}</em>${kontrak ? ` · ${esc(s.VisitType)}` : ''}${num(s.UnitPrice) ? `<small>${fmtRp(s.UnitPrice)}</small>` : ''}</span></label>`).join('')}</div>`;
+}
 
-  const st = o.Status;
-  if (roleIs('Accounting') && st === 'READY_FOR_ACC_AND_SHIPPING') {
-    h += `<div class="card sec tone-cyan"><h3>${ic('wallet')}Accounting — Invoice, Faktur Pajak & Tanda Terima</h3>
-      <div style="display:grid;gap:12px"><div class="field"><label for="accInvNo">Nomor Invoice</label><input class="input" id="accInvNo" autocomplete="off" /></div>
-      <div class="g3">${fileField('accInvFile', 'Invoice (PDF)')}${fileField('accTaxFile', 'Faktur Pajak (PDF)')}${fileField('accRecFile', 'Tanda Terima (PDF)')}</div>
-      <div><button class="btn btn-primary" data-act="submitAcc" data-id="${esc(o.OrderID)}">${ic('upload', 'sm')}Simpan dokumen accounting</button></div></div></div>`;
+function tabBilling(o) {
+  const can = billingCan(o), bs = can.bs || bstate(o), mode = modeOf(o), st = o.Status;
+  const unitName = id => { const s = bs.sc.find(x => x.ScheduleID === id); return s ? `${s.InstrumentName} (SN ${s.SerialNo})${o.ServiceType === 'Service Kontrak' ? ' · ' + s.VisitType : ''}` : id; };
+  const unitChips = b => `<div class="uchips">${bs.unitsOf(b).map(u => `<span>${esc(unitName(u))}</span>`).join('')}</div>`;
+  const n = bs.ids.length, cnt = set => bs.ids.filter(u => set[u]).length;
+  const stat = (label, set) => `<div class="pstat"><div><b>${cnt(set)}</b>/${n}</div><span>${label}</span><div class="ubar"><i style="width:${n ? Math.round(cnt(set) / n * 100) : 0}%"></i></div></div>`;
+
+  let h = `<div class="card sec"><h3>${ic('wallet')}Ringkasan Penagihan</h3>
+    <dl class="kv" style="margin-bottom:14px">
+      <div><dt>Opsi Penagihan</dt><dd>${esc(MODE_LABEL[mode])}</dd></div>
+      <div><dt>Nilai Order</dt><dd>${fmtRp(o.TotalValue)}</dd></div>
+    </dl>
+    <div class="pstats">${stat('Dokumen diterima customer', bs.delivered)}${stat('Sudah diinvoice', bs.invoiced)}${stat('Sudah dibayar', bs.paid)}</div></div>`;
+
+  // --- pengiriman dokumen
+  h += `<div class="card sec"><h3>${ic('truck')}Pengiriman Dokumen ke Customer <span class="cntb">${bs.delRows.length}</span></h3>`;
+  h += bs.delRows.length ? bs.delRows.map((b, i) => `
+    <div class="bcard"><div class="bhead"><b>${mode === 'FULL' ? 'Pengiriman dokumen' : 'Pengiriman #' + (i + 1)}</b><span class="badge tone-teal"><i></i>Diterima customer</span></div>
+      ${unitChips(b)}
+      <div class="docrow">${docLink(b.DeliveryNoteUrl, 'Surat Jalan Dokumen')}${docLink(b.DocDeliveryReceiptUrl, 'Tanda Terima Dokumen (customer)')}${b.BillingReceiptUrl ? docLink(b.BillingReceiptUrl, 'Bukti TT Penagihan') : ''}</div></div>`).join('')
+    : '<p class="hint">Belum ada dokumen yang dikirim ke customer.</p>';
+  h += `</div>`;
+
+  // --- invoice
+  h += `<div class="card sec"><h3>${ic('file')}Invoice & Pembayaran <span class="cntb">${bs.invRows.length}</span></h3>`;
+  h += bs.invRows.length ? bs.invRows.map((b, i) => {
+    const paid = b.PaymentStatus === 'PAID_CLOSED', ready = bs.ready.some(r => r.BillingID === b.BillingID && r._rowIndex === b._rowIndex);
+    const pill = paid ? '<span class="badge tone-green"><i></i>Lunas</span>' : ready ? '<span class="badge tone-indigo"><i></i>Siap ditagih</span>' : '<span class="badge tone-amber"><i></i>Menunggu dokumen diterima customer</span>';
+    return `<div class="bcard"><div class="bhead"><b>${mode === 'PARTIAL' ? 'Invoice #' + (i + 1) + ' · ' : ''}${esc(b.InvoiceNo)}${num(b.Amount) ? ` · ${fmtRp(b.Amount)}` : ''}</b>${pill}</div>
+      ${unitChips(b)}
+      <div class="docrow">${docLink(b.InvoiceUrl, 'Invoice')}${docLink(b.TaxInvoiceUrl, 'Faktur Pajak')}${docLink(b.TaxReceiptUrl, 'Tanda Terima')}</div>
+      ${ready && roleIs('Purchasing') ? `<div class="panelbox"><div class="ttl">${ic('circlecheck', 'sm')}Verifikasi penagihan invoice ini</div>
+        <input class="input sm" id="purReason_${esc(b.BillingID)}" placeholder="Alasan (wajib bila customer komplain / dokumen perlu revisi)…" />
+        <div class="row"><button class="btn btn-success btn-sm" data-act="purchase" data-id="${esc(o.OrderID)}" data-bill="${esc(b.BillingID)}" data-d="PAID_CLOSE">${ic('check', 'sm')}Customer no issue & sudah dibayar</button>
+        <button class="btn btn-warn btn-sm" data-act="purchase" data-id="${esc(o.OrderID)}" data-bill="${esc(b.BillingID)}" data-d="HOLD_REVISION">${ic('undo', 'sm')}Hold — kembalikan ke teknisi</button></div></div>` : ''}</div>`;
+  }).join('') : '<p class="hint">Belum ada invoice.</p>';
+  h += `</div>`;
+
+  // --- form Accounting
+  const needAll = mode !== 'PARTIAL';
+  const approvedAll = bs.approved.length === bs.ids.length && bs.ids.length > 0;
+  if (roleIs('Accounting') && BILL_PHASE.includes(st)) {
+    if (can.inv) {
+      const list = needAll ? bs.sc : bs.sc.filter(s => bs.approved.includes(s.ScheduleID) && !bs.invoiced[s.ScheduleID]);
+      const pre = needAll ? num(o.TotalValue) : 0;
+      h += `<div class="card sec tone-cyan"><h3>${ic('wallet')}Accounting — ${needAll ? 'Invoice keseluruhan' : 'Invoice parsial'}</h3>
+        <div style="display:grid;gap:12px">
+        <div class="field"><label>${needAll ? 'Mencakup seluruh unit' : 'Pilih unit yang diinvoice (sudah disetujui, belum diinvoice)'}</label>${unitPicker(o, 'accUnits', list, needAll)}</div>
+        <div class="g2"><div class="field"><label for="accInvNo">Nomor Invoice</label><input class="input" id="accInvNo" autocomplete="off" /></div>
+        <div class="field"><label for="accAmount">Nilai Invoice (Rp)</label><input class="input" id="accAmount" type="number" min="0" step="any" value="${pre || ''}" placeholder="opsional" /></div></div>
+        <div class="g3">${fileField('accInvFile', 'Invoice (PDF)')}${fileField('accTaxFile', 'Faktur Pajak (PDF)')}${fileField('accRecFile', 'Tanda Terima (PDF)')}</div>
+        <div><button class="btn btn-primary" data-act="submitAcc" data-id="${esc(o.OrderID)}">${ic('upload', 'sm')}Simpan invoice</button></div></div></div>`;
+    } else if (needAll && !approvedAll && !bs.ids.some(u => bs.invoiced[u])) {
+      h += `<div class="callout tone-amber"><span>${ic('clock')}</span><div class="body"><b>Invoice keseluruhan belum bisa dibuat</b><p>Menunggu semua unit disetujui Admin-Dokumen (${bs.approved.length}/${bs.ids.length}).</p></div></div>`;
+    }
   }
-  if (roleIs('Admin-Pengiriman') && ['READY_FOR_ACC_AND_SHIPPING', 'WAITING_SHIPPING_RECEIPT'].includes(st)) {
-    h += `<div class="card sec tone-teal"><h3>${ic('truck')}Pengiriman — Surat Jalan & Bukti Tanda Terima</h3>
-      <div style="display:grid;gap:12px"><div class="g3">${fileField('shipSjFile', 'Surat Jalan Dokumen (PDF)')}${fileField('shipTtBillFile', 'Bukti TT Penagihan (PDF)')}${fileField('shipTtDocFile', 'Bukti TT SJ Dokumen (PDF)')}</div>
-      <p class="hint">Order lanjut ke Purchasing setelah dokumen Accounting & Pengiriman sama-sama lengkap.</p>
-      <div><button class="btn btn-primary" data-act="submitShip" data-id="${esc(o.OrderID)}">${ic('upload', 'sm')}Upload bukti pengiriman</button></div></div></div>`;
-  }
-  if (roleIs('Purchasing') && st === 'READY_FOR_PURCHASING_BILLING') {
-    h += `<div class="card sec tone-indigo"><h3>${ic('circlecheck')}Purchasing — Verifikasi Penagihan Customer</h3>
-      <div style="display:grid;gap:12px"><div class="field"><label for="purReason">Alasan (wajib bila customer komplain / dokumen perlu revisi)</label><input class="input" id="purReason" placeholder="mis. Nama customer pada faktur pajak salah…" /></div>
-      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-success" data-act="purchase" data-id="${esc(o.OrderID)}" data-d="PAID_CLOSE">${ic('check', 'sm')}Customer no issue & sudah dibayar — Close & arsipkan</button>
-        <button class="btn btn-warn" data-act="purchase" data-id="${esc(o.OrderID)}" data-d="HOLD_REVISION">${ic('undo', 'sm')}Hold — kembalikan ke teknisi untuk revisi</button></div></div></div>`;
+  // --- form Pengiriman
+  if (roleIs('Admin-Pengiriman') && BILL_PHASE.includes(st) && can.del) {
+    const forced = mode === 'FULL';
+    const list = forced ? bs.sc : bs.sc.filter(s => bs.approved.includes(s.ScheduleID) && !bs.delivered[s.ScheduleID]);
+    h += `<div class="card sec tone-teal"><h3>${ic('truck')}Pengiriman — ${forced ? 'Dokumen keseluruhan' : 'Dokumen parsial'} & tanda terima customer</h3>
+      <div style="display:grid;gap:12px">
+      <div class="field"><label>${forced ? 'Mencakup seluruh unit' : 'Pilih unit yang dokumennya dikirim (sudah disetujui, belum dikirim)'}</label>${unitPicker(o, 'shipUnits', list, forced)}</div>
+      <div class="g3">${fileField('shipSjFile', 'Surat Jalan Dokumen (PDF)')}${fileField('shipTtDocFile', 'Tanda Terima Dokumen dari Customer (PDF)')}${fileField('shipTtBillFile', 'Bukti TT Penagihan (PDF)' + (forced ? '' : ' — opsional'))}</div>
+      <p class="hint">Tanda terima dokumen dari customer wajib ada sebelum invoice dapat ditagih oleh Purchasing.</p>
+      <div><button class="btn btn-primary" data-act="submitShip" data-id="${esc(o.OrderID)}">${ic('upload', 'sm')}Simpan pengiriman dokumen</button></div></div></div>`;
   }
   return h;
 }
 
 function tabHistory(o) {
   const logs = appData.logs.filter(l => l.OrderID === o.OrderID);
-  return `<div class="card sec"><h3>${ic('clock')}Riwayat Order</h3><div class="timeline" style="padding:0">${
-    logs.length ? logs.map(l => logItem(l, false)).join('') : '<p class="hint">Belum ada riwayat.</p>'}</div></div>`;
+  return `<div class="card sec"><h3 style="justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">${ic('clock')}Riwayat Order</span>
+    <button class="btn btn-ghost btn-sm" data-act="printHistory" data-id="${esc(o.OrderID)}">${ic('printer', 'sm')}Cetak</button></h3>
+    <div class="timeline" style="padding:0">${logs.length ? logs.map(l => logItem(l, false)).join('') : '<p class="hint">Belum ada riwayat.</p>'}</div></div>`;
 }
+
+function printHistory(id) {
+  const o = appData.orders.find(x => x.OrderID === id); if (!o) return;
+  const logs = appData.logs.filter(l => l.OrderID === id).slice().reverse();
+  const sc = schedsOf(id), m = meta(o.Status);
+  const now = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: TZ });
+  $('printArea').innerHTML = `
+    <div class="pr-head"><img src="logo.png" alt="" /><div><h1>PT. PRIDHANA EKA</h1><p>Riwayat Order &amp; Alur Dokumen</p></div></div>
+    <table class="pr-info">
+      <tr><th>Order ID</th><td>${esc(o.OrderID)}</td><th>Status</th><td>${esc(m.label)}</td></tr>
+      <tr><th>Customer</th><td>${esc(o.CustomerName)}</td><th>Jenis</th><td>${esc(o.ServiceType)}</td></tr>
+      <tr><th>Quotation</th><td>${esc(o.QuotNo)} · ${num(o.QuotTotalQty)} unit</td><th>PO</th><td>${esc(o.PONo)} · ${num(o.POTotalQty)} unit</td></tr>
+      <tr><th>Nilai Order</th><td>${fmtRp(o.TotalValue)}</td><th>Opsi Penagihan</th><td>${esc(MODE_LABEL[modeOf(o)])}</td></tr>
+    </table>
+    <h2>Unit / Instrumen</h2>
+    <table class="pr-tbl"><thead><tr><th>Instrumen</th><th>SN</th><th>Kunjungan</th><th>Jadwal</th><th>Teknisi</th><th>Status</th></tr></thead><tbody>
+      ${sc.map(s => `<tr><td>${esc(s.InstrumentName)}</td><td>${esc(s.SerialNo)}</td><td>${esc(s.VisitType)}</td><td>${esc(fmtDate(s.ScheduledDate)) || '—'}</td><td>${esc(s.Technicians) || '—'}</td><td>${esc((DOC_STATUS[s.DocStatus] || [s.DocStatus])[0])}</td></tr>`).join('')}
+    </tbody></table>
+    <h2>Riwayat Aktivitas</h2>
+    <table class="pr-tbl"><thead><tr><th style="width:17%">Waktu</th><th style="width:20%">Pengguna</th><th style="width:20%">Aksi</th><th>Keterangan</th></tr></thead><tbody>
+      ${logs.length ? logs.map(l => `<tr><td>${esc(fmtDT(l.Timestamp))}</td><td>${esc(l.User)}<br><small>${esc(l.Role)}</small></td><td>${esc(LOG_TITLE[l.Action] || l.Action)}</td><td>${esc(l.Details)}</td></tr>`).join('') : '<tr><td colspan="4">Belum ada riwayat.</td></tr>'}
+    </tbody></table>
+    <p class="pr-foot">Dicetak oleh ${esc(currentUser.fullName)} (${esc(currentUser.role)}) · ${esc(now)}</p>`;
+  document.body.classList.add('printing');
+  setTimeout(() => window.print(), 60);
+}
+window.addEventListener('afterprint', () => document.body.classList.remove('printing'));
 
 function tabAdmin(o) {
   return `<div class="callout tone-slate"><span>${ic('shield')}</span><div class="body"><b>Panel Super Admin</b><p>Ubah data atau status job secara manual. Setiap perubahan tercatat pada log aktivitas.</p></div></div>
@@ -1407,10 +1555,17 @@ function addInst() {
   d.innerHTML = `<span class="n">${n}</span>
     <input class="input sm inst-name" placeholder="Nama / tipe instrumen (mis. Shimadzu UV-2600i)" />
     <input class="input sm inst-sn" placeholder="Serial number (opsional)" />
+    <div class="money"><span>Rp</span><input class="input sm inst-price" type="number" min="0" step="any" inputmode="decimal" placeholder="Harga" aria-label="Harga instrumen" /></div>
     <button type="button" class="btn btn-soft-danger btn-icon btn-sm" data-act="rmInst" aria-label="Hapus instrumen">${ic('x', 'sm')}</button>`;
   box.appendChild(d); updateCreateHints();
 }
 function renumberInst() { [...$('instrumentRows').children].forEach((r, i) => { r.querySelector('.n').textContent = i + 1; }); }
+
+const BILLING_DESC = {
+  FULL: 'Semua unit selesai dulu, lalu dokumen dikirim, diinvoice, dan dibayar sekaligus.',
+  PARTIAL: 'Dokumen dikirim per batch unit dan customer menandatangani tanda terima tiap pengiriman. Invoice & pembayaran juga per batch.',
+  DOC_PARTIAL: 'Dokumen boleh dikirim bertahap (tanda terima customer tiap pengiriman), tetapi invoice dibuat satu untuk seluruh unit dan dibayar lunas.'
+};
 
 function updateCreateHints() {
   const type = $('coServiceType').value, q = num($('coQuotQty').value), p = num($('coPoQty').value);
@@ -1419,11 +1574,16 @@ function updateCreateHints() {
   else flag.classList.remove('show');
   const n = $('instrumentRows').children.length;
   const kontrak = type === 'Service Kontrak';
+  const total = [...document.querySelectorAll('.inst-price')].reduce((s, i) => s + num(i.value), 0);
+  $('instTotal').textContent = fmtRp(total);
+  const canPartial = ['Instalasi', 'Kalibrasi'].includes(type);
   $('instHint').textContent = (kontrak ? `Service Kontrak: tiap instrumen otomatis mendapat 3 kunjungan tahunan (${n * 3} jadwal). ` : `${n} unit akan dibuat sebagai jadwal terpisah. `) +
-    (p && n !== p ? `Perhatian: jumlah instrumen (${n}) berbeda dari Qty PO (${p}).` : '');
-  const showBilling = ['Instalasi', 'Kalibrasi'].includes(type) && Math.max(p, q, n) > 1;
+    (p && n !== p ? `Perhatian: jumlah instrumen (${n}) berbeda dari Qty PO (${p}). ` : '') +
+    (canPartial && n === 1 && Math.max(p, q) > 1 ? 'Tambahkan satu baris per unit agar opsi penagihan parsial tersedia.' : '');
+  const showBilling = canPartial && n > 1;
   $('billingField').hidden = !showBilling;
   if (!showBilling) $('coBillingMode').value = 'FULL';
+  $('billingDesc').textContent = BILLING_DESC[$('coBillingMode').value] || '';
 }
 
 $('createOrderForm').onsubmit = async e => {
@@ -1436,7 +1596,7 @@ $('createOrderForm').onsubmit = async e => {
   if (num(v('coQuotQty')) < 1 || num(v('coPoQty')) < 1) return fail('Total Qty Quotation dan PO minimal 1.');
   const qf = $('coQuotFile').files[0], pf = $('coPoFile').files[0];
   if (!qf || !pf) return fail('PDF Quotation dan PDF PO wajib diunggah.');
-  const instruments = [...document.querySelectorAll('.inst-row')].map(r => ({ name: r.querySelector('.inst-name').value.trim(), serialNo: r.querySelector('.inst-sn').value.trim() }));
+  const instruments = [...document.querySelectorAll('.inst-row')].map(r => ({ name: r.querySelector('.inst-name').value.trim(), serialNo: r.querySelector('.inst-sn').value.trim(), price: num(r.querySelector('.inst-price').value) }));
   if (instruments.some(i => !i.name)) return fail('Nama setiap instrumen wajib diisi.');
   const btn = $('btnSubmitOrder'); btn.disabled = true; btn.classList.add('busy');
   try {
@@ -1522,31 +1682,41 @@ const ACT = {
       const invoiceNo = $('accInvNo').value.trim();
       const inv = $('accInvFile').files[0], tax = $('accTaxFile').files[0], rec = $('accRecFile').files[0];
       if (!invoiceNo || !inv || !tax || !rec) throw new Error('Lengkapi nomor invoice dan seluruh PDF Accounting.');
-      await apiCall({ action: 'uploadAccountingDocs', orderId: el.dataset.id, invoiceNo,
+      const box = $('accUnits'); const forced = box.dataset.forced === '1';
+      const units = forced ? undefined : [...box.querySelectorAll('input:checked')].map(i => i.value);
+      if (!forced && !units.length) throw new Error('Pilih minimal satu unit untuk invoice ini.');
+      await apiCall({ action: 'uploadAccountingDocs', orderId: el.dataset.id, invoiceNo, units, amount: $('accAmount').value,
         invoiceBase64: await readPdf(inv), taxBase64: await readPdf(tax), receiptBase64: await readPdf(rec) });
-      await afterAction('Dokumen Accounting berhasil diunggah.');
+      await afterAction('Invoice berhasil disimpan.');
     });
   },
   submitShip(el) {
     run(el, async () => {
-      const sj = $('shipSjFile').files[0], b = $('shipTtBillFile').files[0], d = $('shipTtDocFile').files[0];
-      if (!sj || !b || !d) throw new Error('Lengkapi semua surat jalan & bukti tanda terima (PDF).');
-      await apiCall({ action: 'uploadShippingDocs', orderId: el.dataset.id, sjBase64: await readPdf(sj), ttBillBase64: await readPdf(b), ttDocBase64: await readPdf(d) });
-      await afterAction('Bukti pengiriman diunggah.');
+      const sj = $('shipSjFile').files[0], d = $('shipTtDocFile').files[0], b = $('shipTtBillFile').files[0];
+      const box = $('shipUnits'); const forced = box.dataset.forced === '1';
+      if (!sj || !d) throw new Error('Surat Jalan dokumen dan Tanda Terima dokumen dari customer wajib diunggah.');
+      if (forced && !b) throw new Error('Bukti TT penagihan wajib diunggah.');
+      const units = forced ? undefined : [...box.querySelectorAll('input:checked')].map(i => i.value);
+      if (!forced && !units.length) throw new Error('Pilih minimal satu unit yang dokumennya dikirim.');
+      await apiCall({ action: 'uploadShippingDocs', orderId: el.dataset.id, units,
+        sjBase64: await readPdf(sj), ttDocBase64: await readPdf(d), ttBillBase64: await readPdf(b) });
+      await afterAction('Pengiriman dokumen & tanda terima customer tersimpan.');
     });
   },
   purchase(el) {
     run(el, async () => {
-      const decision = el.dataset.d, reason = $('purReason').value.trim();
+      const decision = el.dataset.d, bill = el.dataset.bill;
+      const reason = ($('purReason_' + bill) || { value: '' }).value.trim();
       if (decision === 'HOLD_REVISION' && !reason) throw new Error('Wajib isi alasan revisi agar teknisi mendapat arahan yang jelas.');
       if (decision === 'PAID_CLOSE') {
-        const c = await confirmDialog({ title: 'Tutup order ini?', message: 'Customer tanpa komplain & pembayaran diterima. Order akan berstatus CLOSED dan diarsipkan.', yes: 'Ya, close order', danger: false });
+        const c = await confirmDialog({ title: 'Konfirmasi pembayaran invoice ini?', message: 'Customer tanpa komplain & pembayaran invoice ini diterima. Order ditutup (CLOSED) bila seluruh unit sudah terbayar.', yes: 'Ya, tandai lunas', danger: false });
         if (!c) return;
       }
-      await apiCall({ action: 'purchasingAction', orderId: el.dataset.id, decision, reason });
-      await afterAction(decision === 'PAID_CLOSE' ? 'Order CLOSED & arsip siap diunduh.' : 'Order di-HOLD dan dikembalikan ke teknisi.');
+      await apiCall({ action: 'purchasingAction', orderId: el.dataset.id, billingId: bill, decision, reason });
+      await afterAction(decision === 'PAID_CLOSE' ? 'Invoice ditandai lunas.' : 'Invoice di-HOLD dan unit dikembalikan ke teknisi.');
     });
   },
+  printHistory(el) { printHistory(el.dataset.id); },
   adminSave(el) {
     run(el, async () => {
       await apiCall({ action: 'adminEditOrder', orderId: el.dataset.id, customerName: $('admCust').value, poNo: $('admPo').value,
@@ -1604,7 +1774,14 @@ document.addEventListener('change', e => {
 });
 let st_;
 $('searchInput').addEventListener('input', e => { clearTimeout(st_); st_ = setTimeout(() => { F.q = e.target.value; if (view === 'orders') renderOrders(); }, 120); });
-['coServiceType', 'coQuotQty', 'coPoQty'].forEach(id => $(id).addEventListener('input', updateCreateHints));
+['coServiceType', 'coQuotQty', 'coPoQty', 'coBillingMode'].forEach(id => $(id).addEventListener('input', updateCreateHints));
+$('instrumentRows').addEventListener('input', updateCreateHints);
+document.addEventListener('change', e => {
+  if (e.target.closest && e.target.closest('#accUnits') && $('accAmount') && !$('accAmount').dataset.touched) {
+    $('accAmount').value = [...$('accUnits').querySelectorAll('input:checked')].reduce((s, i) => s + num(i.dataset.price), 0) || '';
+  }
+});
+document.addEventListener('input', e => { if (e.target.id === 'accAmount') e.target.dataset.touched = '1'; });
 $('modalCreate').addEventListener('mousedown', e => { if (e.target === $('modalCreate')) closeCreate(); });
 $('modalConfirm').addEventListener('mousedown', e => { if (e.target === $('modalConfirm')) $('cfNo').click(); });
 
