@@ -1527,7 +1527,10 @@ function tabUnits(o) {
     const techs = String(s.Technicians || '').split(',').map(x => x.trim()).filter(Boolean);
     const mine = techs.includes(currentUser.fullName);
     const sid = s.ScheduleID;
-    const canUpload = roleIs('Teknisi') && ['SCHEDULED', 'REVISION_REQUIRED'].includes(s.DocStatus) && o.Status !== 'CLOSED';
+    const uploadOpen = ['SCHEDULED', 'REVISION_REQUIRED'].includes(s.DocStatus) && o.Status !== 'CLOSED';
+    // hanya teknisi yang ditunjuk Leader pada unit ini (Administrator dikecualikan)
+    const canUpload = uploadOpen && (isSuper() || (currentUser.role === 'Teknisi' && mine));
+    const lockedForMe = uploadOpen && currentUser.role === 'Teknisi' && !mine;
     const canVerify = roleIs('Admin-Dokumen') && s.DocStatus === 'SUBMITTED_TO_ADMIN_DOC';
     return `
     <div class="card unit ${mine && currentUser.role === 'Teknisi' ? 'mine' : ''}" data-unit="${esc(sid)}">
@@ -1554,6 +1557,7 @@ function tabUnits(o) {
           <div class="field"><label>Teknisi (boleh lebih dari satu)</label>${techPicker(sid, s.Technicians)}</div>
           <div class="row"><button class="btn btn-primary btn-sm" data-act="saveSchedule" data-order="${esc(o.OrderID)}" data-sched="${esc(sid)}">${ic('check', 'sm')}Simpan jadwal & QR</button></div></div>` : ''}
 
+        ${lockedForMe ? `<div class="noteRev tone-slate" style="background:var(--line-2);color:var(--ink-2)">${ic('shield', 'sm')} Unit ini ditugaskan kepada <b>${esc(techs.join(', ') || 'teknisi lain')}</b>. Hanya teknisi yang ditunjuk Leader yang dapat mengunggah Job Report &amp; dokumen dan menyerahkan via QR.</div>` : ''}
         ${canUpload ? `<div class="panelbox"><div class="ttl">${ic('upload', 'sm')}Serahkan hasil pekerjaan ke Admin-Dokumen</div>
           <div class="grid2">${fileField('jr_' + sid, 'Job Report (PDF)')}${o.ServiceType !== 'Service' ? fileField('cert_' + sid, certLabel + ' (PDF)') : ''}</div>
           <div class="row"><button class="btn btn-primary btn-sm" data-act="submitTech" data-order="${esc(o.OrderID)}" data-sched="${esc(sid)}" data-type="${esc(o.ServiceType)}" data-hascert="${s.IQOQ_PQ_Url ? 1 : 0}">${ic('upload', 'sm')}Serahkan via QR</button></div></div>` : ''}
@@ -1857,6 +1861,8 @@ const ACT = {
   submitTech(el) {
     run(el, async () => {
       const sid = el.dataset.sched;
+      const un = schedsOf(el.dataset.order).find(x => x.ScheduleID === sid);
+      if (!isSuper() && !(un && splitU(un.Technicians).includes(currentUser.fullName))) throw new Error('Hanya teknisi yang ditunjuk Leader untuk unit ini yang dapat menyerahkan dokumen.');
       const jr = $('jr_' + sid).files[0]; const certEl = $('cert_' + sid); const cert = certEl ? certEl.files[0] : null;
       if (!jr) throw new Error('Job Report PDF wajib diunggah.');
       if (el.dataset.type !== 'Service' && !cert && el.dataset.hascert !== '1') throw new Error('Dokumen IQOQ / PQ PDF wajib diunggah.');
