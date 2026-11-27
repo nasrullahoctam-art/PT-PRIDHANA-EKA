@@ -2,7 +2,7 @@
  * - Cangkang aplikasi (HTML, ikon, font, QR lib) di-cache agar terbuka cepat & tetap tampil saat offline.
  * - Permintaan ke Google Apps Script (data & upload) TIDAK PERNAH di-cache: selalu langsung ke jaringan.
  * Naikkan VERSION setiap mengganti index.html agar pengguna mendapat versi terbaru. */
-const VERSION = 'pe-v6';
+const VERSION = 'pe-v7';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './logo.png', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
