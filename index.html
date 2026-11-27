@@ -6,6 +6,14 @@
 <meta name="theme-color" content="#14233b" />
 <title>PT. Pridhana Eka — Service & Calibration Portal</title>
 <link rel="icon" href="logo.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Pridhana Eka" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="description" content="Portal alur kerja Instalasi, Kalibrasi, Service Kontrak &amp; Service PT. Pridhana Eka." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -261,10 +269,10 @@ a{color:inherit}
 /* ============ Drawer ============ */
 #drawer{position:fixed;inset:0;z-index:70;pointer-events:none}
 #drawer .bg{position:absolute;inset:0;background:rgba(6,12,24,.5);opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
-#drawer .panel{position:absolute;top:0;right:0;bottom:0;width:min(920px,100%);background:var(--bg);box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+#drawer .panel{position:absolute;top:0;right:0;bottom:0;width:min(920px,100%);background:var(--bg);box-shadow:none;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,visibility 0s linear .3s;display:flex;flex-direction:column;visibility:hidden}
 #drawer.open{pointer-events:auto}
 #drawer.open .bg{opacity:1}
-#drawer.open .panel{transform:none}
+#drawer.open .panel{transform:none;box-shadow:var(--shadow-lg);visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,visibility 0s}
 .dr-head{padding:18px 24px 0;background:var(--surface);border-bottom:1px solid var(--line)}
 .dr-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
 .dr-top h2{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
@@ -366,7 +374,9 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
 [data-theme="dark"] .fsec>.ttl i{background:var(--gold);color:#1a1405}
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.inst-row{display:grid;grid-template-columns:28px 1.5fr 1fr 150px 36px;gap:8px;align-items:center}
+.inst-row{display:grid;grid-template-columns:28px minmax(0,1.5fr) minmax(0,1fr) 160px 36px;grid-template-areas:"n name sn price del";gap:8px;align-items:center}
+.inst-row .n{grid-area:n}.inst-row .inst-name{grid-area:name}.inst-row .inst-sn{grid-area:sn}.inst-row .money{grid-area:price}.inst-row [data-act=rmInst]{grid-area:del}
+.inst-row .input{min-width:0}
 .money{position:relative}.money span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted)}.money .input{padding-left:32px}
 textarea.input{resize:vertical;min-height:92px;line-height:1.5}
 .totalrow{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:11px;background:var(--gold-soft);color:var(--gold-ink);font-weight:700;font-size:13px}.totalrow b{font-size:15px}
@@ -405,21 +415,25 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
   .kpis{grid-template-columns:repeat(2,1fr)}
   .kpis .kpi:last-child{grid-column:1/-1}
   .pstats{grid-template-columns:1fr}
-  .prow{grid-template-columns:1fr}.prow>b{text-align:left}
   .kv,.checklist,.g2,.g3,.panelbox .grid2,.panelbox .grid3{grid-template-columns:1fr}
   .unit{grid-template-columns:1fr}
   .qrbox{flex-direction:row;justify-content:space-between;width:100%}
   .dr-head{padding:16px 16px 0}.dr-body{padding:16px 16px 36px}
-  .inst-row{grid-template-columns:1fr 1fr 36px}.inst-row .n{display:none}.inst-row .inst-name{grid-column:1/-1}.inst-row .money{grid-column:1/3}
   .dialog>header,.dialog .dbody,.dialog>footer{padding-left:16px;padding-right:16px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* Rincian nilai */
-.pbox{display:grid;gap:9px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--surface)}
-.prow{display:grid;grid-template-columns:96px 1fr 150px;gap:10px;align-items:center;font-size:13px;font-weight:600}
-.prow>span{color:var(--ink-2)}.prow>b{text-align:right;font-variant-numeric:tabular-nums}
+.pbox{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--surface);container-type:inline-size}
+.prow{display:grid;grid-template-columns:1fr auto;grid-template-areas:"lab amt" "inp inp";gap:6px 10px;align-items:center;font-size:13px;font-weight:600}
+.prow>span:first-child{grid-area:lab;color:var(--ink-2)}
+.prow>.pin,.prow>.money{grid-area:inp}
+.prow>b{grid-area:amt;text-align:right;font-variant-numeric:tabular-nums}
 .prow .pin{display:grid;grid-template-columns:74px 1fr;gap:6px}
-.prow.total{border-top:1px dashed var(--line);padding-top:10px;font-size:14px}.prow.total>b{color:var(--gold-ink);font-size:17px}
+.prow.total{border-top:1px dashed var(--line);padding-top:10px;font-size:14px;grid-template-areas:"lab amt"}.prow.total>span:nth-child(2){display:none}.prow.total>b{color:var(--gold-ink);font-size:17px}
+@container (min-width:520px){
+  .prow{grid-template-columns:96px 1fr 150px;grid-template-areas:"lab inp amt"}
+  .prow.total{grid-template-areas:"lab . amt"}.prow.total>span:nth-child(2){display:block}
+}
 .pl{display:grid;gap:4px;font-size:12.5px;padding:10px 12px;border-radius:11px;background:var(--surface);border:1px solid var(--line)}
 .pl>div{display:flex;justify-content:space-between;gap:10px}.pl span{color:var(--muted);font-weight:600}.pl b{font-variant-numeric:tabular-nums}
 .pl .t{border-top:1px dashed var(--line);padding-top:5px;margin-top:2px}.pl .t b{color:var(--gold-ink);font-size:14px}
@@ -459,6 +473,74 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
   #printArea small{color:#666}
   #printArea .pr-foot{margin-top:14px;color:#666;font-size:10px;text-align:right}
 }
+/* ============ Form Input Quotation & PO (desktop · tablet · HP) ============ */
+#coQuotFileHost,#coPoFileHost{display:block}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.g2k{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.instlayout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}
+.instcol{display:grid;gap:10px;min-width:0}
+.pricecol{position:sticky;top:0}
+#modalCreate{align-items:center;padding:3vh 16px}
+#modalCreate .dialog{max-width:1040px;display:flex;flex-direction:column;max-height:calc(100vh - 6vh);max-height:calc(100dvh - 6vh);overflow:hidden}
+#modalCreate .dialog>header{flex:none;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:0}
+#createOrderForm{display:flex;flex-direction:column;min-height:0;flex:1}
+#createOrderForm .dbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:16px 22px 18px}
+#createOrderForm>footer{flex:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 22px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+.ftotal{margin-right:auto;display:grid;line-height:1.2}.ftotal span{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}.ftotal b{font-size:17px;color:var(--gold-ink);font-variant-numeric:tabular-nums}
+@media (max-width:900px){
+  .cgrid,.instlayout{grid-template-columns:1fr}
+  .pricecol{position:static}
+}
+@media (max-width:720px){
+  #modalCreate{padding:0;align-items:flex-end}
+  #modalCreate .dialog{max-width:none;width:100%;height:calc(100vh - 18px);height:calc(100dvh - 18px);max-height:none;border-radius:22px 22px 0 0;border-bottom:0;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}
+  @keyframes sheet{from{transform:translateY(48px);opacity:0}}
+  #modalCreate .dialog>header{padding:14px 14px 12px}
+  #modalCreate .dialog>header p{display:none}
+  #modalCreate .dialog>header h3{font-size:16.5px}
+  #createOrderForm .dbody{padding:14px 14px 18px;gap:12px}
+  #createOrderForm>footer{padding:10px 14px calc(12px + env(safe-area-inset-bottom))}
+  .ftotal{flex:1 0 100%;display:flex;justify-content:space-between;align-items:baseline;margin:0}
+  #createOrderForm>footer .btn{flex:1;padding-top:13px;padding-bottom:13px}
+  #createOrderForm>footer .btn-ghost{flex:.6}
+  .fsec{padding:12px}
+  .inst-row{grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) 40px;grid-template-areas:"n name name del" "sn sn price price";gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+  .inst-row .n{align-self:center}
+  .inst-row [data-act=rmInst]{height:40px;width:40px;padding:0}
+  .inst-row .inst-name{grid-column:2/4}
+  textarea.input{min-height:110px}
+}
+/* HP: font ≥16px agar iOS tidak otomatis zoom saat input difokuskan */
+@media (max-width:720px){.input,.input.sm,.select,textarea.input{font-size:16px}}
+/* Layar sentuh */
+html{-webkit-tap-highlight-color:transparent}
+button,.nav,.chip,.orow,.kpi,.file,.ucheck{touch-action:manipulation}
+@media (pointer:coarse){
+  .btn{min-height:42px}.btn-sm{min-height:38px}.btn-icon{min-width:40px}
+  .chip{padding:9px 14px}.ucheck{padding:12px}.nav{padding:12px}
+  .input,.select{min-height:44px}
+}
+/* PWA: area aman (notch / home indicator) */
+.mobilebar{padding-top:calc(10px + env(safe-area-inset-top));padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}
+#sidebar{padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+#toasts{bottom:calc(18px + env(safe-area-inset-bottom))}
+.dr-head{padding-top:calc(18px + env(safe-area-inset-top))}
+.dr-body{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+@media (max-width:720px){.dr-head{padding-top:calc(16px + env(safe-area-inset-top))}.dr-body{padding-bottom:calc(36px + env(safe-area-inset-bottom))}}
+.login-form-wrap{padding-top:calc(32px + env(safe-area-inset-top));padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+@media (max-width:860px){.login-form-wrap{padding-top:calc(8vh + env(safe-area-inset-top))}}
+/* Tombol pasang aplikasi */
+.install-link{display:inline-flex;align-items:center;gap:8px;margin:18px auto 0;padding:9px 14px;border:1px dashed var(--gold);border-radius:999px;background:var(--gold-soft);color:var(--gold-ink);font-weight:700;font-size:12.5px}
+.install-link:hover{filter:brightness(.97)}
+.nav.install{color:var(--gold-2)}.nav.install .ic{color:var(--gold-2)}
+.steps{display:grid;gap:10px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:13.5px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:var(--gold-ink);font-weight:800;font-size:12px}
+.plat{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);display:grid;gap:10px}
+.plat>h4{font-size:14px;font-weight:800;display:flex;gap:8px;align-items:center}
+.plat.hl{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 16%,transparent)}
+.kbd{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);font-weight:700;font-size:12px;white-space:nowrap}
+.offline-bar{position:fixed;left:0;right:0;top:0;z-index:120;padding:calc(6px + env(safe-area-inset-top)) 12px 6px;text-align:center;background:#c77d00;color:#fff;font-size:12px;font-weight:700}
 @media print{#sidebar,.mobilebar,.page-head .acts,#toasts{display:none!important}}
 </style>
 </head>
@@ -502,7 +584,8 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
         <div id="loginError" class="alert tone-red" role="alert" hidden><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
         <button type="submit" id="loginBtn" class="btn btn-gold" style="padding:13px 16px;font-size:14px">Masuk Aplikasi</button>
       </form>
-      <p class="hint" style="margin-top:22px;text-align:center">PT. Pridhana Eka Internal Application</p>
+      <div style="text-align:center"><button type="button" class="install-link" data-act="install" id="installLogin" hidden><svg class="ic sm" viewBox="0 0 24 24" data-i="download"></svg>Pasang aplikasi di HP</button></div>
+      <p class="hint" style="margin-top:18px;text-align:center">PT. Pridhana Eka Internal Application</p>
     </div>
   </section>
 </div>
@@ -524,6 +607,7 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
     <button class="nav" data-act="nav" data-view="orders" data-type="Service"><svg class="ic" viewBox="0 0 24 24" data-i="wrench"></svg>Service<span class="cnt" data-cnt="Service">0</span></button>
     <div class="sb-label">Pemantauan</div>
     <button class="nav" data-act="nav" data-view="activity" id="navAct"><svg class="ic" viewBox="0 0 24 24" data-i="activity"></svg>Log Aktivitas</button>
+    <button class="nav install" data-act="install" id="navInstall" hidden><svg class="ic" viewBox="0 0 24 24" data-i="download"></svg>Pasang Aplikasi</button>
     <div class="sb-spacer"></div>
     <div class="sb-user">
       <div class="who">
@@ -622,54 +706,87 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
               <option value="Service Kontrak">Service Kontrak (3x Kunjungan/Thn + PQ)</option>
               <option value="Service">Service (Job Report)</option>
             </select></div>
-          <div class="field"><label for="coCustomer">Nama Customer</label><input class="input" id="coCustomer" placeholder="PT. Contoh Customer" autocomplete="off" /></div>
+          <div class="field"><label for="coCustomer">Nama Customer</label><input class="input" id="coCustomer" placeholder="PT. Contoh Customer" autocomplete="organization" autocapitalize="words" /></div>
         </div>
 
-        <div class="fsec">
-          <div class="ttl"><i>1</i>Data Quotation</div>
-          <div class="g3">
-            <div class="field"><label for="coQuotNo">No. Quotation</label><input class="input" id="coQuotNo" autocomplete="off" /></div>
-            <div class="field"><label for="coQuotQty">Total Qty Instrumen</label><input class="input" id="coQuotQty" type="number" min="1" inputmode="numeric" /></div>
+        <div class="cgrid">
+          <div class="fsec">
+            <div class="ttl"><i>1</i>Data Quotation</div>
+            <div class="g2k">
+              <div class="field"><label for="coQuotNo">No. Quotation</label><input class="input" id="coQuotNo" autocomplete="off" autocapitalize="characters" /></div>
+              <div class="field"><label for="coQuotQty">Total Qty Instrumen</label><input class="input" id="coQuotQty" type="number" min="1" inputmode="numeric" /></div>
+            </div>
             <div class="field"><label>PDF Quotation</label><span id="coQuotFileHost"></span></div>
+            <div class="field"><label for="coQuotDesc">Deskripsi Quotation</label><textarea class="input" id="coQuotDesc" rows="4" placeholder="Uraian lengkap penawaran, ruang lingkup, syarat, catatan…"></textarea></div>
           </div>
-          <div class="field"><label for="coQuotDesc">Deskripsi Quotation</label><textarea class="input" id="coQuotDesc" rows="4" placeholder="Uraian lengkap penawaran, ruang lingkup, syarat, catatan…"></textarea></div>
-        </div>
 
-        <div class="fsec">
-          <div class="ttl"><i>2</i>Data Purchase Order (PO) Customer</div>
-          <div class="g3">
-            <div class="field"><label for="coPoNo">No. PO (dicek duplikat)</label><input class="input" id="coPoNo" autocomplete="off" /></div>
-            <div class="field"><label for="coPoQty">Total Qty pada PO</label><input class="input" id="coPoQty" type="number" min="1" inputmode="numeric" /></div>
+          <div class="fsec">
+            <div class="ttl"><i>2</i>Data Purchase Order (PO) Customer</div>
+            <div class="g2k">
+              <div class="field"><label for="coPoNo">No. PO (dicek duplikat)</label><input class="input" id="coPoNo" autocomplete="off" autocapitalize="characters" /></div>
+              <div class="field"><label for="coPoQty">Total Qty pada PO</label><input class="input" id="coPoQty" type="number" min="1" inputmode="numeric" /></div>
+            </div>
             <div class="field"><label>PDF PO Customer</label><span id="coPoFileHost"></span></div>
+            <div class="field"><label for="coPoDesc">Deskripsi PO</label><textarea class="input" id="coPoDesc" rows="4" placeholder="Uraian lengkap pesanan sesuai PO customer…"></textarea></div>
+            <div id="qtyFlag" class="alert tone-amber qtyflag"><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
           </div>
-          <div class="field"><label for="coPoDesc">Deskripsi PO</label><textarea class="input" id="coPoDesc" rows="4" placeholder="Uraian lengkap pesanan sesuai PO customer…"></textarea></div>
-          <div id="qtyFlag" class="alert tone-amber qtyflag"><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
         </div>
 
         <div class="fsec">
           <div class="ttl" style="justify-content:space-between"><span style="display:flex;gap:9px;align-items:center"><i>3</i>Rincian Instrumen</span>
             <button type="button" class="btn btn-ghost btn-sm" data-act="addInst"><svg class="ic sm" viewBox="0 0 24 24" data-i="plus"></svg>Tambah Instrumen</button></div>
-          <div id="instrumentRows" style="display:grid;gap:8px"></div>
-          <div id="coPricing"></div>
-          <p class="hint" id="instHint"></p>
+          <div class="instlayout">
+            <div class="instcol"><div id="instrumentRows" style="display:grid;gap:8px"></div><p class="hint" id="instHint"></p></div>
+            <div class="pricecol"><div id="coPricing"></div></div>
+          </div>
         </div>
 
         <div class="field" id="billingField">
           <label for="coBillingMode">Opsi Pengiriman Dokumen &amp; Penagihan (Instalasi &amp; Kalibrasi, Qty &gt; 1)</label>
           <select class="select input" id="coBillingMode">
-            <option value="FULL">Full — tunggu semua selesai; dokumen, invoice &amp; bayar sekaligus</option>
-            <option value="PARTIAL">Parsial — dokumen dikirim per batch (tanda terima customer), invoice &amp; bayar parsial</option>
-            <option value="DOC_PARTIAL">Dokumen parsial (tanda terima customer) — invoice keseluruhan &amp; bayar lunas</option>
+            <option value="FULL">Full — semua sekaligus</option>
+            <option value="PARTIAL">Parsial — per batch unit</option>
+            <option value="DOC_PARTIAL">Dokumen parsial, bayar lunas</option>
           </select>
           <p class="hint" id="billingDesc"></p>
         </div>
         <div id="createError" class="alert tone-red" hidden><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
       </div>
       <footer>
+        <div class="ftotal"><span>Total nilai</span><b id="coFootTotal">Rp 0</b></div>
         <button type="button" class="btn btn-ghost" data-act="closeCreate">Batal</button>
         <button type="submit" id="btnSubmitOrder" class="btn btn-gold">Simpan &amp; Validasi PO</button>
       </footer>
     </form>
+  </div>
+</div>
+
+<!-- ======================= PASANG APLIKASI ======================= -->
+<div class="modal" id="modalInstall" role="dialog" aria-modal="true" aria-labelledby="instTitle">
+  <div class="dialog" style="max-width:520px;margin-top:6vh">
+    <header>
+      <div><h3 id="instTitle">Pasang Aplikasi di HP</h3><p>Buka seperti aplikasi biasa dari layar utama — tanpa Play Store / App Store.</p></div>
+      <button class="btn btn-ghost btn-icon" data-act="closeInstall" aria-label="Tutup"><svg class="ic" viewBox="0 0 24 24" data-i="x"></svg></button>
+    </header>
+    <div class="dbody" style="padding-bottom:18px">
+      <div class="plat" id="platAndroid"><h4>Android (Chrome)</h4>
+        <ol class="steps">
+          <li><span>Buka alamat aplikasi ini di <b>Chrome</b>.</span></li>
+          <li><span>Ketuk menu <span class="kbd">⋮</span> di pojok kanan atas.</span></li>
+          <li><span>Pilih <b>Instal aplikasi</b> (atau <b>Tambahkan ke layar utama</b>), lalu <b>Instal</b>.</span></li>
+        </ol>
+        <button class="btn btn-primary" id="btnNativeInstall" hidden>Pasang sekarang</button>
+      </div>
+      <div class="plat" id="platIos"><h4>iPhone / iPad (Safari)</h4>
+        <ol class="steps">
+          <li><span>Buka alamat aplikasi ini di <b>Safari</b>.</span></li>
+          <li><span>Ketuk tombol <b>Bagikan</b> <span class="kbd">⬆︎ kotak</span> di bilah bawah (iPad: di atas).</span></li>
+          <li><span>Gulir lalu pilih <b>Tambah ke Layar Utama</b> → <b>Tambah</b>.</span></li>
+        </ol>
+      </div>
+      <p class="hint">Komputer (Chrome / Edge): klik ikon pasang <span class="kbd">⊕</span> di ujung kanan kolom alamat. Setelah terpasang, aplikasi tetap membutuhkan internet untuk memuat data.</p>
+    </div>
+    <footer style="display:flex;justify-content:flex-end;padding:0 22px 20px"><button class="btn btn-primary" data-act="closeInstall">Mengerti</button></footer>
   </div>
 </div>
 
@@ -693,7 +810,7 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
  *  KONFIGURASI
  *  Ganti dengan URL Web App hasil Deploy Apps Script (berakhiran /exec).
  * ===================================================================== */
-const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8tqdhiGW2D7i-CpjUkOvvB7rs8-hczgRH3SGkBPzlmgNS7ExYT6ZErslIRF9O-it9/exec';
+const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw1_tvK7qrDqTZpwNojcxz7j-tB5hxGmTBU7Vf2I68hAtIEM_Zfn_HaYIPjhciepJduog/exec';
 const MAX_PDF_MB = 10;
 const AUTO_REFRESH_MS = 90000;
 
@@ -1057,6 +1174,7 @@ function refreshPricing(p) {
   const x = readPricing(p), r = calcPricing(x.subtotal, x.discountType, x.discountValue, x.taxType, x.taxValue);
   $(p + 'DiscAmt').textContent = '− ' + fmtRp(r.disc); $(p + 'TaxAmt').textContent = '+ ' + fmtRp(r.tax); $(p + 'Total').textContent = fmtRp(r.total);
   $(p + 'DiscVal').style.borderColor = r.over ? '#c23a32' : '';
+  if (p === 'co' && $('coFootTotal')) $('coFootTotal').textContent = fmtRp(r.total);
   return r;
 }
 /** Tampilan baca-saja rincian nilai (order / invoice). */
@@ -1629,7 +1747,7 @@ function addInst() {
   const d = document.createElement('div'); d.className = 'inst-row';
   d.innerHTML = `<span class="n">${n}</span>
     <input class="input sm inst-name" placeholder="Nama / tipe instrumen (mis. Shimadzu UV-2600i)" />
-    <input class="input sm inst-sn" placeholder="Serial number (opsional)" />
+    <input class="input sm inst-sn" placeholder="Serial No." aria-label="Serial number (opsional)" />
     <div class="money"><span>Rp</span><input class="input sm inst-price" type="number" min="0" step="any" inputmode="decimal" placeholder="Harga" aria-label="Harga instrumen" /></div>
     <button type="button" class="btn btn-soft-danger btn-icon btn-sm" data-act="rmInst" aria-label="Hapus instrumen">${ic('x', 'sm')}</button>`;
   box.appendChild(d); updateCreateHints();
@@ -1714,6 +1832,7 @@ const ACT = {
   openSidebar() { $('sidebar').classList.add('open'); $('scrim').classList.add('show'); },
   closeSidebar() { closeSidebar(); },
   openCreate() { openCreate(); }, closeCreate() { closeCreate(); },
+  install() { installApp(); }, closeInstall() { $('modalInstall').classList.remove('open'); lockBody(); },
   addInst() { addInst(); },
   rmInst(el) { const box = $('instrumentRows'); if (box.children.length > 1) { el.closest('.inst-row').remove(); renumberInst(); updateCreateHints(); } },
   openOrder(el, ev) { if (ev.target.closest('[data-act="deleteOrder"]')) return; if (view === 'activity') {} openOrder(el.dataset.id); },
@@ -1847,6 +1966,7 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if ($('modalConfirm').classList.contains('open')) { $('cfNo').click(); return; }
+    if ($('modalInstall').classList.contains('open')) { ACT.closeInstall(); return; }
     if ($('modalCreate').classList.contains('open')) { closeCreate(); return; }
     if ($('drawer').classList.contains('open')) { closeDrawer(); return; }
     closeSidebar();
@@ -1875,12 +1995,49 @@ document.addEventListener('change', e => {
   refreshPricing(box.dataset.p);
 }));
 $('modalCreate').addEventListener('mousedown', e => { if (e.target === $('modalCreate')) closeCreate(); });
+$('modalInstall').addEventListener('mousedown', e => { if (e.target === $('modalInstall')) ACT.closeInstall(); });
 $('modalConfirm').addEventListener('mousedown', e => { if (e.target === $('modalConfirm')) $('cfNo').click(); });
 
 /* ============ Init ============ */
 $('coPricing').innerHTML = pricingBox('co', true, 11);
+refreshPricing('co');
 hydrateIcons();
 if (currentUser) showApp();
+
+/* =====================  PWA: pasang aplikasi & service worker  ===================== */
+let deferredInstall = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function syncInstallButtons() {
+  const show = !isStandalone();
+  ['installLogin', 'navInstall'].forEach(id => { const el = $(id); if (el) el.hidden = !show; });
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; syncInstallButtons(); });
+window.addEventListener('appinstalled', () => { deferredInstall = null; syncInstallButtons(); toast('Aplikasi berhasil dipasang.', 'ok'); });
+async function installApp() {
+  if (deferredInstall) {                       // Android / desktop Chrome & Edge: dialog bawaan
+    deferredInstall.prompt();
+    try { await deferredInstall.userChoice; } catch (e) {}
+    deferredInstall = null; syncInstallButtons(); return;
+  }
+  const ios = isIOS();
+  $('platIos').classList.toggle('hl', ios); $('platAndroid').classList.toggle('hl', !ios && /android/i.test(navigator.userAgent));
+  $('btnNativeInstall').hidden = true;
+  $('modalInstall').classList.add('open'); lockBody();
+}
+syncInstallButtons();
+matchMedia('(display-mode: standalone)').addEventListener && matchMedia('(display-mode: standalone)').addEventListener('change', syncInstallButtons);
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+/* Penanda offline */
+function syncOnline() {
+  let bar = document.getElementById('offlineBar');
+  if (!navigator.onLine && !bar) { bar = document.createElement('div'); bar.id = 'offlineBar'; bar.className = 'offline-bar'; bar.textContent = 'Anda sedang offline — data tidak dapat diperbarui.'; document.body.appendChild(bar); }
+  else if (navigator.onLine && bar) { bar.remove(); if (currentUser) loadDashboard(true); }
+}
+window.addEventListener('online', syncOnline); window.addEventListener('offline', syncOnline); syncOnline();
 </script>
 </body>
 </html>
