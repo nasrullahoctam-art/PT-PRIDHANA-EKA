@@ -473,6 +473,7 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
   body.printing #printArea{display:block;color:#111;background:#fff;font:11px/1.45 'Plus Jakarta Sans',Arial,sans-serif}
   #printArea .pr-head{display:flex;gap:12px;align-items:center;border-bottom:2px solid #b08a43;padding-bottom:8px;margin-bottom:10px}
   #printArea .pr-head img{width:46px;height:46px}
+  #printArea .kop h1{font-size:18px;margin:0 0 2px}#printArea .kop p{font-size:10.5px;line-height:1.4;color:#222}#printArea .kop .kop-sub{font-weight:700;font-style:italic;margin-top:2px}
   #printArea h1{font-size:16px;margin:0;letter-spacing:.1em}#printArea .pr-head p{margin:0;color:#555}
   #printArea h2{font-size:12.5px;margin:14px 0 5px;padding-left:6px;border-left:3px solid #b08a43}
   #printArea table{width:100%;border-collapse:collapse}
@@ -1618,7 +1619,7 @@ function tabUnits(o) {
       </div>
       ${isSched(s) ? `<div class="qrbox">
         <div class="q" id="qr_${esc(sid)}"></div>
-        <div class="stno">${esc(s.AssignmentNo)}</div>
+        <div class="stno">${s.AssignmentNo ? esc(s.AssignmentNo) : '<span style="color:var(--amber,#a96a00)">Belum bernomor — simpan jadwal ulang</span>'}</div>
         <small>Scan untuk membuka unit ini</small>
         <div class="row"><button class="btn btn-ghost btn-sm" data-act="dlQR" data-sched="${esc(sid)}">${ic('download', 'sm')}PNG</button>
         <button class="btn btn-ghost btn-sm" data-act="copyId" data-sched="${esc(sid)}">${ic('copy', 'sm')}ID</button></div>
@@ -1629,7 +1630,7 @@ function tabUnits(o) {
   return html;
 }
 
-const isSched = s => !!(s.AssignmentNo && s.ScheduledDate && String(s.Technicians || '').trim());
+const isSched = s => !!(s.ScheduledDate && String(s.Technicians || '').trim());
 function scanLink(sid) {
   return location.protocol.startsWith('http') ? `${location.origin}${location.pathname}?s=${encodeURIComponent(sid)}` : sid;
 }
@@ -1738,13 +1739,19 @@ function tabHistory(o) {
     <div class="timeline" style="padding:0">${logs.length ? logs.map(l => logItem(l, false)).join('') : '<p class="hint">Belum ada riwayat.</p>'}</div></div>`;
 }
 
+const KOP = `<div class="pr-head"><img src="logo.png" alt="" /><div class="kop">
+    <h1>PT. PRIDHANA EKA</h1>
+    <p>JL. CIBADAK NO. 215 BANDUNG 40241 JAWA BARAT INDONESIA</p>
+    <p>Telp. (022) 6031991 / 6011430 Fax. (022) 6034845 E-mail: pridhanaeka@gmail.com</p>
+    <p>NPWP : 01.118.330.8-422.000</p>
+    <p class="kop-sub">Alat Laboratorium - Penelitian &amp; Kimia Analisa</p></div></div>`;
 function printHistory(id) {
   const o = appData.orders.find(x => x.OrderID === id); if (!o) return;
   const logs = appData.logs.filter(l => l.OrderID === id).slice().reverse();
   const sc = schedsOf(id), m = meta(o.Status);
   const now = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: TZ });
   $('printArea').innerHTML = `
-    <div class="pr-head"><img src="logo.png" alt="" /><div><h1>PT. PRIDHANA EKA</h1><p>Riwayat Order &amp; Alur Dokumen</p></div></div>
+    ${KOP}<h1 class="st-title" style="font-size:14px">RIWAYAT ORDER &amp; ALUR DOKUMEN</h1>
     <table class="pr-info">
       <tr><th>Order ID</th><td>${esc(o.OrderID)}</td><th>Status</th><td>${esc(m.label)}</td></tr>
       <tr><th>Customer</th><td>${esc(o.CustomerName)}</td><th>Jenis</th><td>${esc(o.ServiceType)}</td></tr>
@@ -1767,6 +1774,7 @@ function printAssignment(oid, sid) {
   const o = appData.orders.find(x => x.OrderID === oid);
   const s = schedsOf(oid).find(x => x.ScheduleID === sid);
   if (!o || !s || !isSched(s)) return toast('Simpan jadwal terlebih dulu.', 'error');
+  if (!s.AssignmentNo) return toast('Nomor surat tugas belum ada. Tekan "Simpan jadwal & QR" sekali lagi.', 'error');
   const tmp = document.createElement('div'); tmp.style.cssText = 'position:fixed;left:-9999px;top:0';
   document.body.appendChild(tmp);
   let img = '';
@@ -1775,7 +1783,7 @@ function printAssignment(oid, sid) {
   const techs = String(s.Technicians).split(',').map(x => x.trim()).filter(Boolean);
   const now = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: TZ });
   $('printArea').innerHTML = `
-    <div class="pr-head"><img src="logo.png" alt="" /><div><h1>PT. PRIDHANA EKA</h1><p>Layanan Instalasi, Kalibrasi &amp; Service</p></div></div>
+    ${KOP}
     <h1 class="st-title">SURAT TUGAS</h1><p class="st-no">No. ${esc(s.AssignmentNo)}</p>
     <p>Dengan ini Leader menugaskan teknisi berikut untuk melaksanakan pekerjaan sesuai rincian di bawah.</p>
     <table class="pr-info">
@@ -2018,7 +2026,8 @@ const ACT = {
       const techs = [...document.querySelectorAll(`[id="tech_${CSS.escape(sid)}"] .chip.on`)].map(b => b.textContent.trim());
       if (!date) throw new Error('Tanggal kunjungan wajib diisi.');
       if (!techs.length) throw new Error('Pilih minimal satu teknisi.');
-      await apiCall({ action: 'assignSchedule', orderId: el.dataset.order, schedules: [{ scheduleId: sid, scheduledDate: date, technicians: techs }] });
+      const res = await apiCall({ action: 'assignSchedule', orderId: el.dataset.order, schedules: [{ scheduleId: sid, scheduledDate: date, technicians: techs }] });
+      if (res && !(res.assignmentNos && res.assignmentNos[0])) toast('Jadwal tersimpan, tetapi server belum membuat nomor surat tugas. Pastikan Code.gs terbaru sudah di-Deploy (New version).', 'error');
       await afterAction('Jadwal tersimpan. Nomor surat tugas & QR sudah dibuat.');
     });
   },
