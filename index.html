@@ -332,6 +332,17 @@ a.doc:hover{border-color:var(--gold);background:var(--gold-soft)}
 .qrbox .q{background:#fff;padding:8px;border-radius:10px;line-height:0}
 .qrbox .q img,.qrbox .q canvas{max-width:100%}
 .qrbox small{font-size:10.5px;color:var(--muted);text-align:center}
+.qrbox .q.empty{width:112px;height:112px;display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);background:var(--surface);color:var(--muted);line-height:1.3}
+.qrbox .q.empty svg{width:34px;height:34px;opacity:.45}
+.qrbox .stno{font-size:10.5px;font-weight:700;color:var(--ink-2);text-align:center;word-break:break-all}
+.toolbar .tbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.scanwrap{position:relative;border-radius:14px;overflow:hidden;background:#0b1220;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+.scanwrap video{width:100%;height:100%;object-fit:cover}
+.scanwrap .frame{position:absolute;inset:18% 18%;border:3px solid rgba(255,255,255,.85);border-radius:16px;box-shadow:0 0 0 999px rgba(6,12,24,.35);pointer-events:none}
+.scanwrap .msg{position:absolute;inset:auto 10px 10px;color:#fff;font-size:12.5px;text-align:center;background:rgba(6,12,24,.6);border-radius:10px;padding:6px 10px}
+.scanalt{display:grid;gap:10px;margin-top:14px}
+#modalScan .dialog{max-width:520px;margin-top:4vh}
+@media (max-width:760px){#modalScan{padding:0;align-items:flex-end}#modalScan .dialog{max-width:none;width:100%;margin:0;border-radius:22px 22px 0 0}}
 .qrbox .row{display:flex;gap:6px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:12px;font-weight:600;color:var(--ink-2);transition:all .12s}
@@ -471,6 +482,12 @@ textarea.input{resize:vertical;min-height:92px;line-height:1.5}
   #printArea .pr-tbl td{padding:5px 6px;border:1px solid #d9d2bf;vertical-align:top;word-break:break-word}
   #printArea tr{page-break-inside:avoid}
   #printArea small{color:#666}
+  #printArea .st-title{text-align:center;margin:6px 0 2px;font-size:17px;letter-spacing:.14em}
+  #printArea .st-no{text-align:center;margin:0 0 12px;font-weight:700}
+  #printArea .st-qr{display:flex;gap:18px;align-items:flex-start;margin-top:14px}
+  #printArea .st-qr img{width:130px;height:130px;border:1px solid #ccc;padding:4px}
+  #printArea .st-sign{display:flex;justify-content:space-between;margin-top:34px;text-align:center}
+  #printArea .st-sign div{width:40%}#printArea .st-sign .sp{height:60px}
   #printArea .pr-foot{margin-top:14px;color:#666;font-size:10px;text-align:right}
 }
 /* ============ Form Input Quotation & PO (desktop · tablet · HP) ============ */
@@ -581,6 +598,7 @@ button,.nav,.chip,.orow,.kpi,.file,.ucheck{touch-action:manipulation}
             <button type="button" class="toggle-eye" id="togglePass" aria-label="Tampilkan password"><svg class="ic" viewBox="0 0 24 24" data-i="eye"></svg></button>
           </div>
         </div>
+        <div id="scanNotice" class="alert tone-amber" hidden><svg class="ic" viewBox="0 0 24 24" data-i="qr"></svg><span>QR unit terdeteksi. QR hanya dapat dibuka oleh akun terdaftar — silakan masuk, unit akan terbuka otomatis.</span></div>
         <div id="loginError" class="alert tone-red" role="alert" hidden><svg class="ic" viewBox="0 0 24 24" data-i="alert"></svg><span></span></div>
         <button type="submit" id="loginBtn" class="btn btn-gold" style="padding:13px 16px;font-size:14px">Masuk Aplikasi</button>
       </form>
@@ -652,6 +670,7 @@ button,.nav,.chip,.orow,.kpi,.file,.ucheck{touch-action:manipulation}
             <div class="input-wrap"><svg class="ic" viewBox="0 0 24 24" data-i="search"></svg>
               <input class="input" id="searchInput" type="search" placeholder="Cari customer, No. PO, Quotation, ID unit…" />
             </div>
+            <div class="tbtns"><button class="btn btn-primary" data-act="openScan" id="btnScan" type="button"><svg class="ic sm" viewBox="0 0 24 24" data-i="qr"></svg>Scan QR</button></div>
             <div class="filters" id="activeFilters"></div>
           </div>
           <div class="lhead"><div>Order &amp; Customer</div><div>Quotation &amp; PO</div><div>Progres Unit</div><div>Status Alur</div><div></div></div>
@@ -787,6 +806,28 @@ button,.nav,.chip,.orow,.kpi,.file,.ucheck{touch-action:manipulation}
       <p class="hint">Komputer (Chrome / Edge): klik ikon pasang <span class="kbd">⊕</span> di ujung kanan kolom alamat. Setelah terpasang, aplikasi tetap membutuhkan internet untuk memuat data.</p>
     </div>
     <footer style="display:flex;justify-content:flex-end;padding:0 22px 20px"><button class="btn btn-primary" data-act="closeInstall">Mengerti</button></footer>
+  </div>
+</div>
+
+<!-- ======================= SCAN QR ======================= -->
+<div class="modal" id="modalScan" role="dialog" aria-modal="true" aria-labelledby="scanTitle">
+  <div class="dialog">
+    <header>
+      <div><h3 id="scanTitle">Scan QR Unit</h3><p>Arahkan kamera ke QR pada surat tugas. Di komputer, tempel kode QR di kolom bawah.</p></div>
+      <button class="btn btn-ghost btn-icon" data-act="closeScan" aria-label="Tutup"><svg class="ic" viewBox="0 0 24 24" data-i="x"></svg></button>
+    </header>
+    <div class="dbody" style="padding-bottom:20px">
+      <div class="scanwrap" id="scanWrap"><video id="scanVideo" playsinline muted></video><div class="frame"></div><div class="msg" id="scanMsg">Menyiapkan kamera…</div></div>
+      <div class="scanalt">
+        <div class="field"><label for="scanCode">Tempel / ketik kode QR atau ID unit</label>
+          <div style="display:flex;gap:8px"><input class="input" id="scanCode" placeholder="Tempel link QR atau ID unit, lalu Enter" autocomplete="off" /><button class="btn btn-gold" data-act="scanCodeGo" type="button">Buka</button></div>
+          <span class="hint">Pemindai QR USB (keyboard) juga bisa: klik kolom ini lalu scan.</span></div>
+        <div class="row" style="display:flex;gap:8px;flex-wrap:wrap">
+          <label class="btn btn-ghost" style="cursor:pointer"><input type="file" id="scanImg" accept="image/*" hidden />Unggah gambar QR</label>
+          <button class="btn btn-ghost" data-act="scanRestart" type="button">Aktifkan ulang kamera</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1059,10 +1100,18 @@ function forceLogout(msg) {
   currentUser = null; loaded = false; openId = null;
   clearInterval(autoTimer);
   $('drawer').classList.remove('open'); $('appView').hidden = true; $('loginView').hidden = false;
-  lockBody();
+  // QR, surat tugas & data unit hanya untuk akun terdaftar: bersihkan semuanya saat keluar
+  try { stopScan(); } catch (e) {}
+  document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+  $('detBody').innerHTML = ''; $('printArea').innerHTML = ''; document.body.classList.remove('printing');
+  try { appData = { orders: [], schedules: [], billings: [], logs: [], techniciansList: [] }; } catch (e) {}
+  lockBody(); showScanNotice();
   if (msg) { const err = $('loginError'); err.querySelector('span').textContent = msg; err.hidden = false; }
 }
 
+function showScanNotice() {
+  const n = $('scanNotice'); if (n) n.hidden = !pendingScan;
+}
 async function logout() {
   const tok = currentUser && currentUser.token;
   try { await apiCall({ action: 'logout' }, { timeout: 8000 }); } catch (e) {}
@@ -1567,23 +1616,26 @@ function tabUnits(o) {
           <div class="row"><button class="btn btn-success btn-sm" data-act="verifyDoc" data-order="${esc(o.OrderID)}" data-sched="${esc(sid)}" data-ok="1">${ic('check', 'sm')}Terima dokumen</button>
           <button class="btn btn-warn btn-sm" data-act="verifyDoc" data-order="${esc(o.OrderID)}" data-sched="${esc(sid)}" data-ok="0">${ic('undo', 'sm')}Minta revisi teknisi</button></div></div>` : ''}
       </div>
-      <div class="qrbox">
+      ${isSched(s) ? `<div class="qrbox">
         <div class="q" id="qr_${esc(sid)}"></div>
+        <div class="stno">${esc(s.AssignmentNo)}</div>
         <small>Scan untuk membuka unit ini</small>
         <div class="row"><button class="btn btn-ghost btn-sm" data-act="dlQR" data-sched="${esc(sid)}">${ic('download', 'sm')}PNG</button>
         <button class="btn btn-ghost btn-sm" data-act="copyId" data-sched="${esc(sid)}">${ic('copy', 'sm')}ID</button></div>
-      </div>
+        ${canSched ? `<button class="btn btn-gold btn-sm" data-act="printAssign" data-sched="${esc(sid)}" data-order="${esc(o.OrderID)}">${ic('printer', 'sm')}Cetak Surat Tugas</button>` : ''}
+      </div>` : `<div class="qrbox"><div class="q empty">${ic('qr')}</div><small>QR &amp; surat tugas muncul setelah jadwal disimpan</small></div>`}
     </div>`;
   }).join('');
   return html;
 }
 
+const isSched = s => !!(s.AssignmentNo && s.ScheduledDate && String(s.Technicians || '').trim());
 function scanLink(sid) {
   return location.protocol.startsWith('http') ? `${location.origin}${location.pathname}?s=${encodeURIComponent(sid)}` : sid;
 }
 function drawQRs(o) {
   if (typeof QRCode === 'undefined') return;
-  schedsOf(o.OrderID).forEach(s => {
+  schedsOf(o.OrderID).filter(isSched).forEach(s => {
     const el = document.getElementById('qr_' + s.ScheduleID);
     if (!el) return;
     el.innerHTML = '';
@@ -1711,6 +1763,118 @@ function printHistory(id) {
   document.body.classList.add('printing');
   setTimeout(() => window.print(), 60);
 }
+function printAssignment(oid, sid) {
+  const o = appData.orders.find(x => x.OrderID === oid);
+  const s = schedsOf(oid).find(x => x.ScheduleID === sid);
+  if (!o || !s || !isSched(s)) return toast('Simpan jadwal terlebih dulu.', 'error');
+  const tmp = document.createElement('div'); tmp.style.cssText = 'position:fixed;left:-9999px;top:0';
+  document.body.appendChild(tmp);
+  let img = '';
+  try { new QRCode(tmp, { text: scanLink(sid), width: 260, height: 260, correctLevel: QRCode.CorrectLevel.M }); const c = tmp.querySelector('canvas'); img = c ? c.toDataURL('image/png') : ''; } catch (e) {}
+  tmp.remove();
+  const techs = String(s.Technicians).split(',').map(x => x.trim()).filter(Boolean);
+  const now = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: TZ });
+  $('printArea').innerHTML = `
+    <div class="pr-head"><img src="logo.png" alt="" /><div><h1>PT. PRIDHANA EKA</h1><p>Layanan Instalasi, Kalibrasi &amp; Service</p></div></div>
+    <h1 class="st-title">SURAT TUGAS</h1><p class="st-no">No. ${esc(s.AssignmentNo)}</p>
+    <p>Dengan ini Leader menugaskan teknisi berikut untuk melaksanakan pekerjaan sesuai rincian di bawah.</p>
+    <table class="pr-info">
+      <tr><th>Customer</th><td colspan="3">${esc(o.CustomerName)}</td></tr>
+      <tr><th>Order ID</th><td>${esc(o.OrderID)}</td><th>Jenis</th><td>${esc(o.ServiceType)}</td></tr>
+      <tr><th>No. Quotation</th><td>${esc(o.QuotNo)}</td><th>No. PO</th><td>${esc(o.PONo)}</td></tr>
+      <tr><th>Instrumen</th><td>${esc(s.InstrumentName)}</td><th>Serial No.</th><td>${esc(s.SerialNo) || '—'}</td></tr>
+      <tr><th>Kunjungan</th><td>${esc(s.VisitType)}</td><th>Jadwal kunjungan</th><td><b>${esc(fmtDate(s.ScheduledDate))}</b></td></tr>
+      <tr><th>ID Unit</th><td colspan="3" class="mono">${esc(sid)}</td></tr>
+    </table>
+    <h2>Teknisi yang ditugaskan</h2>
+    <table class="pr-tbl"><thead><tr><th style="width:8%">No</th><th>Nama Teknisi</th></tr></thead><tbody>${techs.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table>
+    <div class="st-qr">${img ? `<img src="${img}" alt="QR unit" />` : ''}<div><b>QR Unit</b><p>Scan QR ini lewat menu <i>Scan QR</i> di aplikasi untuk membuka unit dan menyerahkan hasil pekerjaan ke Admin-Dokumen. Hanya teknisi yang tercantum di atas yang dapat menyerahkan dokumen.</p></div></div>
+    <div class="st-sign"><div>Leader<div class="sp"></div><b>${esc(s.AssignedBy || currentUser.fullName)}</b></div><div>Teknisi<div class="sp"></div><b>${esc(techs[0] || '')}</b></div></div>
+    <p class="pr-foot">Dicetak oleh ${esc(currentUser.fullName)} (${esc(currentUser.role)}) · ${esc(now)}</p>`;
+  document.body.classList.add('printing');
+  setTimeout(() => window.print(), 150);
+}
+
+/* ---------- Scan QR (kamera HP / tempel kode di desktop) ---------- */
+let scanStream = null, scanTimer = null, scanBusy = false;
+function parseScanCode(t) {
+  t = String(t || '').trim(); if (!t) return '';
+  try { const u = new URL(t); const v = u.searchParams.get('s'); if (v) return v; } catch (e) {}
+  const m = t.match(/[?&]s=([^&#\s]+)/); if (m) return decodeURIComponent(m[1]);
+  return t;
+}
+function openByCode(raw) {
+  const id = parseScanCode(raw); if (!id) return false;
+  const s = appData.schedules.find(x => String(x.ScheduleID).toLowerCase() === id.toLowerCase());
+  if (!s) { toast(`ID unit "${id}" tidak ditemukan.`, 'error'); return false; }
+  closeScan(); openOrder(s.OrderID, 'units', s.ScheduleID); return true;
+}
+function loadJsQR() {
+  if (window.jsQR) return Promise.resolve(window.jsQR);
+  const urls = ['https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js', 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js'];
+  return new Promise((res, rej) => {
+    const next = i => { if (i >= urls.length) return rej(new Error('lib')); const sc = document.createElement('script'); sc.src = urls[i]; sc.onload = () => window.jsQR ? res(window.jsQR) : next(i + 1); sc.onerror = () => next(i + 1); document.head.appendChild(sc); };
+    next(0);
+  });
+}
+function scanMsg(t) { $('scanMsg').textContent = t; }
+function openScan() { $('modalScan').classList.add('open'); hydrateIcons($('modalScan')); lockBody(); $('scanCode').value = ''; startScan(); }
+function closeScan() { stopScan(); $('modalScan').classList.remove('open'); lockBody(); }
+function stopScan() {
+  clearTimeout(scanTimer); scanTimer = null;
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  const v = $('scanVideo'); try { v.pause(); v.srcObject = null; } catch (e) {}
+}
+async function startScan() {
+  stopScan(); scanMsg('Menyiapkan kamera…');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { scanMsg('Kamera tidak tersedia di perangkat/browser ini. Tempel kode QR di bawah.'); return; }
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+  } catch (e) { scanMsg('Kamera tidak dapat diakses (izin ditolak / tidak ada kamera). Tempel kode QR di bawah.'); return; }
+  if (!$('modalScan').classList.contains('open')) { stopScan(); return; }
+  const v = $('scanVideo'); v.srcObject = scanStream; try { await v.play(); } catch (e) {}
+  scanMsg('Arahkan QR ke dalam bingkai');
+  let det = null;
+  if ('BarcodeDetector' in window) { try { det = new BarcodeDetector({ formats: ['qr_code'] }); } catch (e) {} }
+  let jq = null;
+  if (!det) { try { jq = await loadJsQR(); } catch (e) { scanMsg('Pemindai tidak dapat dimuat (offline?). Tempel kode QR di bawah.'); return; } }
+  const cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true });
+  const tick = async () => {
+    if (!scanStream) return;
+    if (!scanBusy && v.readyState >= 2 && v.videoWidth) {
+      scanBusy = true;
+      try {
+        let text = '';
+        if (det) { const r = await det.detect(v); if (r.length) text = r[0].rawValue; }
+        else {
+          const k = Math.min(1, 640 / v.videoWidth); cv.width = v.videoWidth * k; cv.height = v.videoHeight * k;
+          cx.drawImage(v, 0, 0, cv.width, cv.height);
+          const r = jq(cx.getImageData(0, 0, cv.width, cv.height).data, cv.width, cv.height, { inversionAttempts: 'dontInvert' });
+          if (r) text = r.data;
+        }
+        if (text && openByCode(text)) { scanBusy = false; return; }
+      } catch (e) {}
+      scanBusy = false;
+    }
+    scanTimer = setTimeout(tick, 200);
+  };
+  tick();
+}
+async function scanFromImage(file) {
+  if (!file) return;
+  try {
+    const bmp = await createImageBitmap(file);
+    let text = '';
+    if ('BarcodeDetector' in window) { try { const r = await new BarcodeDetector({ formats: ['qr_code'] }).detect(bmp); if (r.length) text = r[0].rawValue; } catch (e) {} }
+    if (!text) {
+      const jq = await loadJsQR(); const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
+      const x = c.getContext('2d'); x.drawImage(bmp, 0, 0); const r = jq(x.getImageData(0, 0, c.width, c.height).data, c.width, c.height); if (r) text = r.data;
+    }
+    if (!text) return toast('QR tidak terbaca pada gambar tersebut.', 'error');
+    openByCode(text);
+  } catch (e) { toast('Gambar tidak dapat dibaca.', 'error'); }
+}
+
 window.addEventListener('afterprint', () => document.body.classList.remove('printing'));
 
 function tabAdmin(o) {
@@ -1855,7 +2019,7 @@ const ACT = {
       if (!date) throw new Error('Tanggal kunjungan wajib diisi.');
       if (!techs.length) throw new Error('Pilih minimal satu teknisi.');
       await apiCall({ action: 'assignSchedule', orderId: el.dataset.order, schedules: [{ scheduleId: sid, scheduledDate: date, technicians: techs }] });
-      await afterAction('Jadwal & QR berhasil disimpan.');
+      await afterAction('Jadwal tersimpan. Nomor surat tugas & QR sudah dibuat.');
     });
   },
   submitTech(el) {
@@ -1949,6 +2113,9 @@ const ACT = {
       await afterAction(`Job ${id} berhasil dihapus.`);
     });
   },
+  openScan() { openScan(); }, closeScan() { closeScan(); }, scanRestart() { startScan(); },
+  scanCodeGo() { openByCode($('scanCode').value); },
+  printAssign(el) { printAssignment(el.dataset.order, el.dataset.sched); },
   dlQR(el) {
     const c = document.querySelector(`[id="qr_${CSS.escape(el.dataset.sched)}"] canvas`);
     if (!c) return toast('QR belum siap.', 'error');
@@ -1972,6 +2139,7 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if ($('modalConfirm').classList.contains('open')) { $('cfNo').click(); return; }
+    if ($('modalScan').classList.contains('open')) { closeScan(); return; }
     if ($('modalInstall').classList.contains('open')) { ACT.closeInstall(); return; }
     if ($('modalCreate').classList.contains('open')) { closeCreate(); return; }
     if ($('drawer').classList.contains('open')) { closeDrawer(); return; }
@@ -1987,6 +2155,7 @@ document.addEventListener('change', e => {
     else { em.textContent = 'Pilih file PDF…'; box.classList.remove('has'); }
   }
 });
+showScanNotice();
 let st_;
 $('searchInput').addEventListener('input', e => { clearTimeout(st_); st_ = setTimeout(() => { F.q = e.target.value; if (view === 'orders') renderOrders(); }, 120); });
 ['coServiceType', 'coQuotQty', 'coPoQty', 'coBillingMode'].forEach(id => $(id).addEventListener('input', updateCreateHints));
@@ -2001,6 +2170,9 @@ document.addEventListener('change', e => {
   refreshPricing(box.dataset.p);
 }));
 $('modalCreate').addEventListener('mousedown', e => { if (e.target === $('modalCreate')) closeCreate(); });
+$('modalScan').addEventListener('mousedown', e => { if (e.target === $('modalScan')) closeScan(); });
+$('scanCode').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); openByCode($('scanCode').value); } });
+$('scanImg').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; scanFromImage(f); });
 $('modalInstall').addEventListener('mousedown', e => { if (e.target === $('modalInstall')) ACT.closeInstall(); });
 $('modalConfirm').addEventListener('mousedown', e => { if (e.target === $('modalConfirm')) $('cfNo').click(); });
 
